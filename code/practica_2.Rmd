@@ -30,9 +30,6 @@ Per tal de poder realitzar la selecció de les dades d'interès a analitzar, el 
 
 ```{r message= FALSE, warning=FALSE}
 data_clients<-read.csv("../data/marketing_campaign.csv", header=T, sep="\t")
-
-summary(data_clients)
-
 ```
 
 D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
@@ -53,14 +50,74 @@ D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
 - MntMeatProducts
 - MntFishProducts
 - MntSweetProducts
+- NumWebPurchases
+- NumCatalogPurchases
+- NumStorePurchases
 
 La resta de variables, degut a que no es faran servir, s'eliminen del conjunt de dades:
 
 ```{r message= FALSE, warning=FALSE}
 data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome', 
-                                 'Dt_Customer', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts')]
-
-summary(data_clients)
+                                 'Dt_Customer', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts',
+                                 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
 
 ```
+
+*****
+# Neteja de dades
+*****
+
+Abans de començar amb la neteja de dades, cal mirar el tipus de dades que R ha assignat a cada columna, i també amb la funció 'summary' es pot veure els valors màxims, mínims i les mitjanes de les variables numèriques.
+
+```{r message= FALSE, warning=FALSE}
+summary(data_clients)
+```
+
+Es pot observar que les variables 'Education', 'Marital Status' i 'Dt Customer' són les úniques expressades com a text. La resta de variables són numèriques.
+
+Primer, es validarà que les variables de text 'Education' i 'Marital Status' es poden categoritzar:
+
+```{r message= FALSE, warning=FALSE}
+table(data_clients$Education)
+table(data_clients$Marital_Status)
+```
+
+Totes dues variables es poden categoritzar:
+
+```{r message= FALSE, warning=FALSE}
+data_clients$Education <- as.factor(data_clients$Education)
+data_clients$Marital_Status <- as.factor(data_clients$Marital_Status)
+```
+
+
+*****
+## Zeros o elements buits
+*****
+
+### Les dades contenen zeros o elements buits? Com gestionaries aquests casos?
+
+Les variables numèriques utilitzen el valor 0 per indicar que no es té informació. I les de tipus text ho indiquen mitjançant els elements buits.
+El primer pas per a fer aquesta comprobació, es validar si existeixen valors buits en les variables seleccionades:
+
+```{r message= FALSE, warning=FALSE}
+colSums(is.na(data_clients))
+```
+
+En aquest cas, la variable 'Income' en té 24. Per tal de gestionar aquests valors, hi ha diverses tècniques que es poden aplicar:
+- Eliminar aquests registres.
+- Aplicar la mitjana dels valors més propers.
+
+Degut a que es tracta d'1% dels registres totals, es preferible eliminar-los ja que l'impacte i la pèrduda de dades és mínima:
+
+```{r message= FALSE, warning=FALSE}
+data_clients <- data_clients[, !colMeans(is.na(data_clients))]
+colSums(is.na(data_clients))
+```
+
+
+### Identificació i tractament de valors extrems
+
+El següent pas és identificar els valors extrems, que són les dades que es troben allunyades de la distribució normal.
+
+
 
