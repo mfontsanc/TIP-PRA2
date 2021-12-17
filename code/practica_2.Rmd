@@ -119,5 +119,118 @@ colSums(is.na(data_clients))
 
 El següent pas és identificar els valors extrems, que són les dades que es troben allunyades de la distribució normal.
 
+Utilitzarem la funció boxplots.stats() de R per anar revisant variable a variable si trobem registres amb valors extrems 
+que es puguin considerar incorrectes o que ens pugui implicar una desviació important. 
+
+VARIABLE YEAR_BIRTH
+
+```{r message= FALSE, warning=FALSE}
+boxplot.stats(data_clients$Year_Birth)$out
+summary(data_clients$Year_Birth)
+
+## En aquest cas considerem que aquests 3 valors són incorrectes, ja que implicaria que actualment tenen més de 130 anys.
+## Decidim canviar-los per el valor mitjà.
+
+data_clients$Year_Birth[(data_clients$Year_Birth==1893)] <- 1970
+data_clients$Year_Birth[(data_clients$Year_Birth==1900)] <- 1970
+data_clients$Year_Birth[(data_clients$Year_Birth==1899)] <- 1970
+```
+
+VARIABLES EDUCATION, MARITAL STATUS, KIDHOME, TEENHOME I NUMSTORESPURCHASES:  
+
+```{r message= FALSE, warning=FALSE}
+boxplot.stats(data_clients$Education)$out
+boxplot.stats(data_clients$Marital_Status)$out
+boxplot.stats(data_clients$Kidhome)$out
+boxplot.stats(data_clients$Teenhome)$out
+boxplot.stats(data_clients$NumStorePurchases)$out
+
+table(data_clients$Education)
+table(data_clients$Marital_Status)
+table(data_clients$Kidhome)
+table(data_clients$Teenhome)
+table(data_clients$NumStorePurchases)
+
+## No sembla que hi hagin valors extrems. 
+## Revisem els seus valor amb la funció table
+```
+
+VARIABLE DT_CUSTOMER:  
+```{r message= FALSE, warning=FALSE}
+# Revisem els anys de les dates de clients per si veiem alguna cosa rara.
+
+boxplot(as.numeric(substring(data_clients$Dt_Customer,7,10)))
+table(as.numeric(substring(data_clients$Dt_Customer,7,10)))
+
+## Tant la seva representació en boxplot com en taula és correcta.
+```
+VARIABLE NUMWEBPURCHASES: 
+
+```{r message= FALSE, warning=FALSE}
+boxplot.stats(data_clients$NumWebPurchases)$out
+summary(data_clients$NumWebPurchases)
+
+## Els valors extrems són valors que es poden donar. Els donem per bons.
+```
+
+VARIBALE NUMCATALOGPURCHAES:
+```{r message= FALSE, warning=FALSE}
+boxplot.stats(data_clients$NumCatalogPurchases)$out
+summary(data_clients$NumCatalogPurchases)
+
+## Els valors extrems són valors que es poden donar. Els donem per bons.
+```
+VARIABLE MNTFRUITS:
+```{r message= FALSE, warning=FALSE}
+## Al tenir tants valors diferents, representem el seu boxplot:
+
+boxplot(data_clients$MntFruits)
+summary(data_clients$MntFruits)
+
+## Veiem que hi han valors que estàn fora de ho esperat pero no allunyats entre ells i a més es poden donar.
+## Ho donem per bo.
+```
+VARIABLE MNTFISHPRODUCTS:
+```{r message= FALSE, warning=FALSE}
+ 
+## Al tenir tants valors diferents, representem el seu boxplot
+boxplot(data_clients$MntFishProducts)
+summary(data_clients$MntFishProducts)
+## Veiem que hi han valors que estàn fora de ho esperat pero no allunyats entre ells i a més es poden donar.
+## Ho donem per bo.
+```
+VARIABLE MNTSWEETPRODUCTS:
+```{r message= FALSE, warning=FALSE}
+boxplot(data_clients$MntSweetProducts)
+summary(data_clients$MntSweetProducts)
+
+## Veiem que hi han un valor que estàn molt fora de ho esperat.
+## Al ser només un el canviem per la mitjana.
+
+data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- 8
+```
+VARIABLE MNTMEATPRODUCTS;
+```{r message= FALSE, warning=FALSE}
+## Camp MntMeatProducts:  
+## Al tenir tants valors diferents, representem el seu boxplot
+boxplot(data_clients$MntMeatProducts)
+summary(data_clients$MntMeatProducts)
+## Sembla que hi han uns 4 valors superiors dels 1500 i diferenciats dels altres.
+table(data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] )
+## Els canviem per la seva mitjana:
+data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)]->67
+```
+
+
+
+*****
+## Anàlisi de les dades
+*****
+
+### Selecció dels grups de dades que es volen analitzar/comparar (planificació dels anàlisis a aplicar)
+
+
+
+
 
 
