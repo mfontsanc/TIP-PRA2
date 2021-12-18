@@ -19,8 +19,6 @@ output:
 knitr::opts_chunk$set(eval=T, echo=T, fig.width=12, fig.height=8)
 ```
 
-```{r message= FALSE, warning=FALSE}
-```
 
 *****
 # Integració i selecció de les dades d'interès a analitzar
@@ -110,8 +108,8 @@ En aquest cas, la variable 'Income' en té 24. Per tal de gestionar aquests valo
 Degut a que es tracta d'1% dels registres totals, es preferible eliminar-los ja que l'impacte i la pèrduda de dades és mínima:
 
 ```{r message= FALSE, warning=FALSE}
-data_clients <- data_clients[, !colMeans(is.na(data_clients))]
-colSums(is.na(data_clients))
+data_clients <- na.omit(data_clients)
+colSums(is.na(data_keep))
 ```
 
 
@@ -130,10 +128,11 @@ summary(data_clients$Year_Birth)
 
 ## En aquest cas considerem que aquests 3 valors són incorrectes, ja que implicaria que actualment tenen més de 130 anys.
 ## Decidim canviar-los per el valor mitjà.
+median_year_birth <- data_clients$Year_Birth
 
-data_clients$Year_Birth[(data_clients$Year_Birth==1893)] <- 1970
-data_clients$Year_Birth[(data_clients$Year_Birth==1900)] <- 1970
-data_clients$Year_Birth[(data_clients$Year_Birth==1899)] <- 1970
+data_clients$Year_Birth[(data_clients$Year_Birth==1893)] <- median_year_birth
+data_clients$Year_Birth[(data_clients$Year_Birth==1900)] <- median_year_birth
+data_clients$Year_Birth[(data_clients$Year_Birth==1899)] <- median_year_birth
 ```
 
 VARIABLES EDUCATION, MARITAL STATUS, KIDHOME, TEENHOME I NUMSTORESPURCHASES:  
@@ -207,7 +206,7 @@ summary(data_clients$MntSweetProducts)
 ## Veiem que hi han un valor que estàn molt fora de ho esperat.
 ## Al ser només un el canviem per la mitjana.
 
-data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- 8
+data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- median(data_clients$MntSweetProducts)
 ```
 VARIABLE MNTMEATPRODUCTS;
 ```{r message= FALSE, warning=FALSE}
@@ -218,7 +217,7 @@ summary(data_clients$MntMeatProducts)
 ## Sembla que hi han uns 4 valors superiors dels 1500 i diferenciats dels altres.
 table(data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] )
 ## Els canviem per la seva mitjana:
-data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)]->67
+data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] <- median(data_clients$MntMeatProducts)
 ```
 
 
@@ -229,8 +228,141 @@ data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)]->67
 
 ### Selecció dels grups de dades que es volen analitzar/comparar (planificació dels anàlisis a aplicar)
 
+La selecció dels grups de dades ha de permetre realitzar les proves estadístiques en funció dels grups a comparar o analitzar.
+
+Per això, es seleccionaran les dades en funció de les variables 'Education' i 'Marital Status', aquestes són les que s'han categoritzat anteriorment.
+
+```{r message= FALSE, warning=FALSE}
+#Agrupació per estudis:
+
+data_clients.basic <- data_clients[data_clients$Education == "Basic",]
+data_clients.graduation <- data_clients[data_clients$Education == "Graduation",]
+data_clients.cycle <- data_clients[data_clients$Education == "2n Cycle",]
+data_clients.master <- data_clients[data_clients$Education == "Master",]
+data_clients.phd <- data_clients[data_clients$Education == "PhD",]
+
+#Agrupació per estat civil:
+data_clients.divorced <- data_clients[data_clients$Education == "Divorced",]
+data_clients.married <- data_clients[data_clients$Education == "Married",]
+data_clients.single <- data_clients[data_clients$Education == "Single" || data_clients$Education == "Alone",]
+data_clients.together <- data_clients[data_clients$Education == "Together",]
+data_clients.widow <- data_clients[data_clients$Education == "Widow",]
+
+```
 
 
+### Comprovació de la normalitat i homogeneïtat de la variància
 
+Per a poder realitzar les proves estadístiques, cal comprovar la normalitat i la homogeneïtat de la variància.
+
+En aquest cas utilitzarem el test de Shaprio-Wilk, on diu que si el p-valor és més petit que α=0,05, es conclou que les dades no estan seguint una distribució normal. Per contra, si p-valor es major que α=0,05, les dades sí que estan seguint una distribució normal.
+
+Les variables que es mesurarà la normalitat són les del tipus numèric, i que no siguin la variable ID (corresponen a l'identificador), i Kidhome i Teenhome ja que corresponen a valors booleans del tipus 0 i 1.
+
+```{r message= FALSE, warning=FALSE}
+options(scipen = 100)
+par(mfrow=c(2,2))
+
+p_value <- 0.05
+
+columnes <- colnames(data_clients)
+
+colnames_not_check <- c("ID", "Kidhome", "Teenhome")
+
+for (i in 1:ncol(data_clients)) {
+  col <- data_clients[,i]
+  if(is.numeric(col) && !is.element(colnames(data_clients)[i], colnames_not_check)){
+    qqnorm(col, main = paste("Normal Q-Q plot: ", colnames(data_clients)[i]));
+    qqline(col, col = 2)
+    
+    normality_pvalue <- shapiro.test(col)$p.value
+    
+    if(normality_pvalue < p_value){
+      cat("Distribució NO normalitzada de la columna: ", colnames(data_clients)[i])
+    }else{
+      cat("Distribució normal de la columna: ", colnames(data_clients)[i])
+    }
+    cat("\n")
+  }
+}
+
+```
+
+Es pot observar en el diagrama Q-Q i fent el test Shapiro-Wilk, que cap de les variables està normalitzada.
+
+Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases:
+
+```{r message= FALSE, warning=FALSE}
+if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
+
+par(mfrow=c(2,2))
+
+data_clients_normalitzat <- data_clients
+data_clients_normalitzat$MntFruits <- log(data_clients_normalitzat$MntFruits)
+data_clients_normalitzat$MntMeatProducts <- log(data_clients_normalitzat$MntMeatProducts)
+data_clients_normalitzat$MntFishProducts <- log(data_clients_normalitzat$MntFishProducts)
+data_clients_normalitzat$MntSweetProducts <- log(data_clients_normalitzat$MntSweetProducts)
+data_clients_normalitzat$NumWebPurchases <- log(data_clients_normalitzat$NumWebPurchases)
+data_clients_normalitzat$NumCatalogPurchases <- log(data_clients_normalitzat$NumCatalogPurchases)
+data_clients_normalitzat$NumStorePurchases <- log(data_clients_normalitzat$NumStorePurchases)
+
+ggplot(data_clients_normalitzat, aes(x = MntFruits)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("MntFruits")
+
+ggplot(data_clients_normalitzat, aes(x = MntMeatProducts)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("MntMeatProducts")
+
+ggplot(data_clients_normalitzat, aes(x = MntFishProducts)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("MntFishProducts")
+
+ggplot(data_clients_normalitzat, aes(x = MntSweetProducts)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("MntSweetProducts")
+
+ggplot(data_clients_normalitzat, aes(x = NumWebPurchases)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("NumWebPurchases")
+
+ggplot(data_clients_normalitzat, aes(x = NumCatalogPurchases)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("NumCatalogPurchases")
+
+ggplot(data_clients_normalitzat, aes(x = NumStorePurchases)) +
+  geom_histogram() +
+  ylab("Nombre total") +
+  xlab("NumStorePurchases")
+
+```
+
+Un cop es tenen les dades normalitzades, es fa l'estudi de l'homoscedasticitat. S'utilitzarà el test de Fligner-Killeen ja que es volen comparar les dades normalitzades amb les que no ho han estat.
+
+Tal i com passava amb el test Shapiro-Wilk, si el p-value és inferior a 0.05, es conclou que les dades no són homogènies:
+
+```{r message= FALSE, warning=FALSE}
+
+fligner.test(Year_Birth ~ MntFruits, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ MntMeatProducts, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ MntFishProducts, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ MntSweetProducts, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ NumWebPurchases, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ NumCatalogPurchases, data = data_clients_normalitzat)
+fligner.test(Year_Birth ~ NumStorePurchases, data = data_clients_normalitzat)
+
+```
+
+Les variables següents són homogències ja que el p-value és superior a 0.05: Year_Birth by MntFishProducts, Year_Birth by NumWebPurchases.
+La resta no ho són.
+
+
+## Aplicació de proves estadístiques per comparar els grups de dades
 
 
