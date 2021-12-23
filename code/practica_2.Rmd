@@ -366,3 +366,107 @@ La resta no ho són.
 ## Aplicació de proves estadístiques per comparar els grups de dades
 
 
+## Aplicació de proves estadístiques per comparar els grups de dades. 
+## En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
+## d'hipòtesis, correlacions, regressions etc.
+
+ANÀLISIS DE CORRELACIÓ:
+
+Procedim a realitzar un anàlisis de correlació amb les diferents variables i així verificar si hi ha alguna amb que tingui una dependència prou gran per creure que té una influència.
+
+Utilitzarem les dades normalitzades (data_clients_normalitzat):
+
+```{r message= FALSE, warning=FALSE}
+
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+# Calcular el coeficiente de correlación para cada variable cuantitativa
+# con respecto al campo "precio"
+for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
+if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+spearman_test = cor.test(data_clients_normalitzat[,i],
+data_clients_normalitzat[,9],
+method = "spearman")
+corr_coef = spearman_test$estimate
+p_val = spearman_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = corr_coef
+pair[2][1] = p_val
+corr_matrix <- rbind(corr_matrix, pair)
+rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+}
+}
+print(corr_matrix)
+
+```
+
+Les variables amb més correlació amb la quantitat de número de Fruita comprada són els que estàn més a prop dels valors -1 i 1. 
+
+En aquest cas són MntMeatProducts i MntSweetProducts amb la que tenen una correlació més alta, però en cap cas és rellevant.
+
+ANÀLISIS DE CONTRAST:
+
+Mirem ara de fer prova de contrast d'hipòtesi:
+
+Com que quasi totes les relaciones entre les variables no són homogènees utilitzarem el tets de kruskal entre els diferentes variables i mntsweetproducts, revisant quin valor de p-value dona.
+
+Si és menor a 0,05 concluirem que el els diners que es gasta en productes dolços és variant segons els diferents valors de l'altra variable.
+
+
+
+```{r message= FALSE, warning=FALSE}
+
+
+cont_matrix <- matrix(nc = 2, nr = 0)
+colnames(cont_matrix) <- c("statistic", "p-value")
+# Calcular el coeficiente de correlación para cada variable cuantitativa
+# con respecto al campo "precio"
+for (i in 1:(ncol(data_clients) - 1)) {
+if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
+statistic = kruskal_test$statistic
+p_val = kruskal_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = statistic
+pair[2][1] = p_val
+cont_matrix <- rbind(cont_matrix, pair)
+rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+}
+}
+print(cont_matrix)
+
+
+```
+
+En aquest cas, revisem que tots els valors són inferiors a 0,05, per tant tenen rellevància amb la variable.
+
+Fem també una prova de t-test per les dades preparades anteriorment. Per molt que no siguin normals, al tenir un tamany prou gran podem utilitzar la prova. 
+
+Revisem el test entre els diferents grups d'estudis i estat civil per veure si hi ha alguna relació:
+
+
+```{r message= FALSE, warning=FALSE}
+
+print(paste("t-students basic vs graduation:",t.test(data_clients.basic$MntFruits, data_clients.graduation$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs cycle:",t.test(data_clients.basic$MntFruits, data_clients.cycle$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs master:",t.test(data_clients.basic$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs master:",t.test(data_clients.basic$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs cycle:",t.test(data_clients.graduation$MntFruits, data_clients.cycle$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs master:",t.test(data_clients.graduation$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs alternative:",t.test(data_clients.graduation$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs alternative:",t.test(data_clients.cycle$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs phd:",t.test(data_clients.cycle$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs alternativa:",t.test(data_clients.master$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
+
+
+
+```
+D'aquí podem concloure que com més alts són els estudis més semblants són les seves compres respecte a la fruita.
+No es pot fer la mateixa proba pe r els estats civils ja uqe la majoria de clients estan casats, divorciats o junts:
+
+```{r message= FALSE, warning=FALSE}
+summary(data_clients$Marital_Status)
+```
+
