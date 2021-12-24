@@ -220,7 +220,17 @@ table(data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] )
 data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] <- median(data_clients$MntMeatProducts)
 ```
 
-
+VARIABLE INCOME:
+```{r message= FALSE, warning=FALSE}
+## Camp Income:  
+## Al tenir tants valors diferents, representem el seu boxplot
+boxplot(data_clients$Income)
+summary(data_clients$Income)
+## Hi ha un valor molt superior al altres.
+table(data_clients$Income[(data_clients$Income>300000)] )
+## Els canviem per la seva mitjana:
+data_clients$Income[(data_clients$Income>300000)] <- median(data_clients$Income)
+```
 
 *****
 ## Anàlisi de les dades
@@ -290,21 +300,24 @@ for (i in 1:ncol(data_clients)) {
 
 Es pot observar en el diagrama Q-Q i fent el test Shapiro-Wilk, que cap de les variables està normalitzada.
 
-Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases:
+Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases. 
+En aquest cas s'aplica la transformació Box-Cox:
 
 ```{r message= FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
+if (!require('forecast')) install.packages('forecast'); library('forecast')
 
 par(mfrow=c(2,2))
 
 data_clients_normalitzat <- data_clients
-data_clients_normalitzat$MntFruits <- log(data_clients_normalitzat$MntFruits)
-data_clients_normalitzat$MntMeatProducts <- log(data_clients_normalitzat$MntMeatProducts)
-data_clients_normalitzat$MntFishProducts <- log(data_clients_normalitzat$MntFishProducts)
-data_clients_normalitzat$MntSweetProducts <- log(data_clients_normalitzat$MntSweetProducts)
-data_clients_normalitzat$NumWebPurchases <- log(data_clients_normalitzat$NumWebPurchases)
-data_clients_normalitzat$NumCatalogPurchases <- log(data_clients_normalitzat$NumCatalogPurchases)
-data_clients_normalitzat$NumStorePurchases <- log(data_clients_normalitzat$NumStorePurchases)
+data_prep <- data_clients[,c('MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
+data_clients_normalitzat$MntFruits <- BoxCox(data_clients[,c('MntFruits')], 1/2)
+data_clients_normalitzat$MntMeatProducts <- BoxCox(data_clients[,c('MntMeatProducts')], 1/2)
+data_clients_normalitzat$MntFishProducts <- BoxCox(data_clients[,c('MntFishProducts')], 1/2)
+data_clients_normalitzat$MntSweetProducts <- BoxCox(data_clients[,c('MntSweetProducts')], 1/2)
+data_clients_normalitzat$NumWebPurchases <- BoxCox(data_clients[,c('NumWebPurchases')], 1/2)
+data_clients_normalitzat$NumCatalogPurchases <- BoxCox(data_clients[,c('NumCatalogPurchases')], 1/2)
+data_clients_normalitzat$NumStorePurchases <- BoxCox(data_clients[,c('NumStorePurchases')], 1/2)
 
 ggplot(data_clients_normalitzat, aes(x = MntFruits)) +
   geom_histogram() +
@@ -359,15 +372,15 @@ fligner.test(Year_Birth ~ NumStorePurchases, data = data_clients_normalitzat)
 
 ```
 
-Les variables següents són homogències ja que el p-value és superior a 0.05: Year_Birth by MntFishProducts, Year_Birth by NumWebPurchases.
+Les variables següents són homogènies ja que el p-value és superior a 0.05: Year_Birth by MntFishProducts, Year_Birth by NumWebPurchases.
 La resta no ho són.
 
 
-## Aplicació de proves estadístiques per comparar els grups de dades
+### Aplicació de proves estadístiques per comparar els grups de dades
 
 
-## Aplicació de proves estadístiques per comparar els grups de dades. 
-## En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
+### Aplicació de proves estadístiques per comparar els grups de dades. 
+#### En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
 ## d'hipòtesis, correlacions, regressions etc.
 
 ANÀLISIS DE CORRELACIÓ:
@@ -383,19 +396,19 @@ colnames(corr_matrix) <- c("estimate", "p-value")
 # Calcular el coeficiente de correlación para cada variable cuantitativa
 # con respecto al campo "precio"
 for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
-if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
-spearman_test = cor.test(data_clients_normalitzat[,i],
-data_clients_normalitzat[,9],
-method = "spearman")
-corr_coef = spearman_test$estimate
-p_val = spearman_test$p.value
-# Add row to matrix
-pair = matrix(ncol = 2, nrow = 1)
-pair[1][1] = corr_coef
-pair[2][1] = p_val
-corr_matrix <- rbind(corr_matrix, pair)
-rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
-}
+  if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+    spearman_test = cor.test(data_clients_normalitzat[,i],
+    data_clients_normalitzat[,9],
+    method = "spearman")
+    corr_coef = spearman_test$estimate
+    p_val = spearman_test$p.value
+    # Add row to matrix
+    pair = matrix(ncol = 2, nrow = 1)
+    pair[1][1] = corr_coef
+    pair[2][1] = p_val
+    corr_matrix <- rbind(corr_matrix, pair)
+    rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+  }
 }
 print(corr_matrix)
 
@@ -423,17 +436,17 @@ colnames(cont_matrix) <- c("statistic", "p-value")
 # Calcular el coeficiente de correlación para cada variable cuantitativa
 # con respecto al campo "precio"
 for (i in 1:(ncol(data_clients) - 1)) {
-if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
-kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
-statistic = kruskal_test$statistic
-p_val = kruskal_test$p.value
-# Add row to matrix
-pair = matrix(ncol = 2, nrow = 1)
-pair[1][1] = statistic
-pair[2][1] = p_val
-cont_matrix <- rbind(cont_matrix, pair)
-rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
-}
+  if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+    kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
+    statistic = kruskal_test$statistic
+    p_val = kruskal_test$p.value
+    # Add row to matrix
+    pair = matrix(ncol = 2, nrow = 1)
+    pair[1][1] = statistic
+    pair[2][1] = p_val
+    cont_matrix <- rbind(cont_matrix, pair)
+    rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+  }
 }
 print(cont_matrix)
 
@@ -464,9 +477,48 @@ print(paste("t-students master vs alternativa:",t.test(data_clients.master$MntFr
 
 ```
 D'aquí podem concloure que com més alts són els estudis més semblants són les seves compres respecte a la fruita.
-No es pot fer la mateixa proba pe r els estats civils ja uqe la majoria de clients estan casats, divorciats o junts:
+No es pot fer la mateixa proba per els estats civils ja que la majoria de clients estan casats, divorciats o junts:
 
 ```{r message= FALSE, warning=FALSE}
 summary(data_clients$Marital_Status)
 ```
+
+## Representació dels resultats a partir de taules gràfiques
+
+Les taules gràfiques han d'ajudar a representat els resultats mostrats anteriorment.
+
+Primerament, es comprova que les compmres realitzades a la fruita i la carna en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
+
+```{r message= FALSE, warning=FALSE}
+if (!require('ggplot2')) install.packages('ggplot2'); library(ggplot2)
+
+ggplot(data_clients_normalitzat, aes(x=MntFruits, y=MntMeatProducts, color=Education)) + 
+    geom_point(size=6) 
+```
+
+Es pot observar que hi ha una gran diferència de les persones amb estudis bàsics, que gasten menys diners en la compra de fruita i de carn. Tot i així, les persones amb la resta d'estudis, compren per sobre de la mitjana.
+
+
+Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat amb les variables en referència a la compra de fruita, carn, peix i dolços:
+
+```{r message= FALSE, warning=FALSE}
+if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
+
+plotMeat <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntMeatProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotFruits <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntFruits) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotFish <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntFishProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotSweet <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntSweetProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+
+```
+
+En aquest cas s'observa que l'edat (any de naixement) és una bona variable que influeix en la compra de productes.
 
