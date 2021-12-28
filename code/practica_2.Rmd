@@ -158,7 +158,7 @@ Degut a que es tracta d'1% dels registres totals, es preferible eliminar-los ja 
 
 ```{r message= FALSE, warning=FALSE}
 data_clients <- na.omit(data_clients)
-colSums(is.na(data_keep))
+colSums(is.na(data_clients))
 ```
 
 *****
