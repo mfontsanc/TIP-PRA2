@@ -302,11 +302,11 @@ data_clients.master <- data_clients[data_clients$Education == "Master",]
 data_clients.phd <- data_clients[data_clients$Education == "PhD",]
 
 #Agrupació per estat civil:
-data_clients.divorced <- data_clients[data_clients$Education == "Divorced",]
-data_clients.married <- data_clients[data_clients$Education == "Married",]
-data_clients.single <- data_clients[data_clients$Education == "Single" || data_clients$Education == "Alone",]
-data_clients.together <- data_clients[data_clients$Education == "Together",]
-data_clients.widow <- data_clients[data_clients$Education == "Widow",]
+data_clients.divorced <- data_clients[data_clients$Marital_Status == "Divorced",]
+data_clients.married <- data_clients[data_clients$Marital_Status == "Married",]
+data_clients.single <- data_clients[data_clients$Marital_Status == "Single" || data_clients$Education == "Alone",]
+data_clients.together <- data_clients[data_clients$Marital_Status == "Together",]
+data_clients.widow <- data_clients[data_clients$Marital_Status == "Widow",]
 
 ```
 
