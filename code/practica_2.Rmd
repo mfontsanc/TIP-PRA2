@@ -19,6 +19,53 @@ output:
 knitr::opts_chunk$set(eval=T, echo=T, fig.width=12, fig.height=8)
 ```
 
+# Descripció del dataset. Perquè és important i quina pregunta/problema pretén respondre?
+
+El dataset que hem decidit fer servir per aquesta pràctica és el següent: 
+
+https://www.kaggle.com/imakash3011/customer-personality-analysis
+
+És un conjunt de dades obtingut de la web Kaggle i construit per 29 atributs, dels quals hi ha un d’ells que és l’identificador únic del registre, 25 atributs numèrics enters i 3 atributs de tipus text.
+
+Es tracta d’una enquesta feta a 2.240 clients d’una empresa per a poder valorar la seva personalitat a l’hora de comprar els seus productes i amb la finalitat de comprendre i analitzar els gustos i necessitats que tenen segons el tipus de clients que siguin. 
+
+D’aquesta manera l’empresa pot prendre decisions respecte als productes que ven o fer campanyes de marketing més específiques segons el tipus de clients i producte.
+
+
+Els atributs que conté el dataset són els següents: 
+
+- ID:   Identificador únic del client.
+- Year_Birth: Any de naixement del client.
+- Education: Nivell d’educació del client.
+- Marital_Status: Estat marital del client. 
+- Income: Ingrés familiar del client.
+- Kidhome: Número de fills amb qui viu el client.	
+- Teenhome: Número d’adolescents amb qui viu el client.		
+- Dt_Customer: Data en que el client s’inscriu com client de l’empresa.	
+- Recency: Número de dies que han passat desde  l’última compra del client.
+- MntWines: Quantitat gastada en vi durant els últims dos anys per el client.
+- MntFruits:Quantitat gastada en vi durant els últims dos anys per el client.	
+- MntMeatProducts:Quantitat gastada en carn durant els últims dos anys per el client.
+- MntFishProducts: Quantitat gastada en peix durant els últims dos anys per el client.
+- MntSweetProducts: Quantitat gastada en dolços durant els últims dos anys per el client.
+- MntGoldProds: Quantitat gastada en or durant els últims dos anys per el client.
+- NumDealsPurchases: Número de compres realitzades amb descomptes per el client. 
+- NumWebPurchases: Número de compres realitzades des de la web de l’empresa per el  client.
+- NumCatalogPurchases: Número de compres realitzades des del catàleg de l’empresa per el client.
+- NumStorePurchases: Número de compres realitzades directament en una tenda de l’empresa per el client.
+- NumWebVisitsMonth: Número de  visites realitzades durant l’últim mes a la web de l’empresa del client.
+- AcceptedCmp3: 1 si el client va acceptar l’oferta en la tercera campanya, 0 en cas contrari
+- AcceptedCmp4: 1 si el client va acceptar l’oferta en la quarta campanya, 0 en cas contrari.
+- AcceptedCmp5: 1 si el client va acceptar l’oferta en la cinquena campanya, 0 en cas contrari.
+- AcceptedCmp1: 1 si el client va acceptar l’oferta en la primera campanya, 0 en cas contrari.
+- AcceptedCmp2: 1 si el client va acceptar l’oferta en la segons campanya, 0 en cas contrari.
+- Complain: 1 si hi ha hagut alguna queixa del client en els últims dos anys. 0 en cas contrari.
+- Z_CostContact: Cost Contacte. Té valor 3 per defecte.
+- Z_Revenue: Ingresos del client: Té valor 11 per defecte.	
+- Response: 1 si el client va acceptar l’oferta en la última campanya, 0 en cas contrari.
+
+A partir del conjunt de dades d’aquest dataset, es preten estudiar com influleix el perfil del client amb la quantitat gastada en les compres de productes d’aliments. Per això, s’aplicaran mètodes de regressió per a veure la relació entre les diferents variables, i mètodes de classificació per a crear el perfil del client.
+Aquest estudi és important per a les empreses de ventes de productes (tan online com físiques) per a poder identificar el tipus de client que compra cada producte i crear aíxi campanyes de màrketing específiques.
 
 *****
 # Integració i selecció de les dades d'interès a analitzar
