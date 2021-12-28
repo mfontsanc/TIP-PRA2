@@ -25,9 +25,11 @@ El dataset que hem decidit fer servir per aquesta pràctica és el següent:
 
 https://www.kaggle.com/imakash3011/customer-personality-analysis
 
-És un conjunt de dades obtingut de la web Kaggle i construit per 29 atributs, dels quals hi ha un d’ells que és l’identificador únic del registre, 25 atributs numèrics enters i 3 atributs de tipus text.
+És un conjunt de dades obtingut de la web Kaggle i construit per 29 atributs, dels quals hi ha un d’ells que és l’identificador únic del registre, 25 atributs numèrics enters 
+i 3 atributs de tipus text.
 
-Es tracta d’una enquesta feta a 2.240 clients d’una empresa per a poder valorar la seva personalitat a l’hora de comprar els seus productes i amb la finalitat de comprendre i analitzar els gustos i necessitats que tenen segons el tipus de clients que siguin. 
+Es tracta d’una enquesta feta a 2.240 clients d’una empresa per a poder valorar la seva personalitat a l’hora de comprar els seus productes i amb la finalitat de comprendre
+i analitzar els gustos i necessitats que tenen segons el tipus de clients que siguin. 
 
 D’aquesta manera l’empresa pot prendre decisions respecte als productes que ven o fer campanyes de marketing més específiques segons el tipus de clients i producte.
 
@@ -159,8 +161,9 @@ data_clients <- na.omit(data_clients)
 colSums(is.na(data_keep))
 ```
 
-
-### Identificació i tractament de valors extrems
+*****
+## Identificació i tractament de valors extrems
+*****
 
 El següent pas és identificar els valors extrems, que són les dades que es troben allunyades de la distribució normal.
 
@@ -423,8 +426,10 @@ Les variables següents són homogènies ja que el p-value és superior a 0.05: 
 La resta no ho són.
 
 
+*****
 ### Aplicació de proves estadístiques per comparar els grups de dades
 
+*****
 
 ### Aplicació de proves estadístiques per comparar els grups de dades. 
 #### En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
@@ -432,7 +437,8 @@ La resta no ho són.
 
 ANÀLISIS DE CORRELACIÓ:
 
-Procedim a realitzar un anàlisis de correlació amb les diferents variables i així verificar si hi ha alguna amb que tingui una dependència prou gran per creure que té una influència.
+Procedim a realitzar un anàlisis de correlació amb les diferents variables i així verificar si hi ha alguna amb que tingui una dependència prou gran 
+per creure que té una influència.
 
 Utilitzarem les dades normalitzades (data_clients_normalitzat):
 
