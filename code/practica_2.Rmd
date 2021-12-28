@@ -435,108 +435,479 @@ La resta no ho són.
 #### En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
 ## d'hipòtesis, correlacions, regressions etc.
 
-ANÀLISIS DE CORRELACIÓ:
+# ANÀLISIS DE CORRELACIÓ:
 
-Procedim a realitzar un anàlisis de correlació amb les diferents variables i així verificar si hi ha alguna amb que tingui una dependència prou gran 
-per creure que té una influència.
+Procedim a realitzar un anàlisis de correlació amb les diferents variables i així verificar si hi ha alguna variablme amb que les varibles 
 
-Utilitzarem les dades normalitzades (data_clients_normalitzat):
+- MntFruits
+- MntMeatProducts
+- MntFishProducts
+- MntSweetProducts
+
+tinguin una dependència prou gran per creure que pot influir amb el seu valor.
+
+Per fer l'estudi ytilitzarem les dades normalitzades (data_clients_normalitzat):
+
+# MntFruits
+
+```{r message= FALSE, warning=FALSE}
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
+if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+spearman_test = cor.test(data_clients_normalitzat[,i],
+data_clients_normalitzat[,9],
+method = "spearman")
+corr_coef = spearman_test$estimate
+p_val = spearman_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = corr_coef
+pair[2][1] = p_val
+corr_matrix <- rbind(corr_matrix, pair)
+rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+}
+}
+print(corr_matrix)
+```
+
+Les variables amb més correlació amb la quantitat de fruita comprada són els que estàn més a prop dels valors -1 i 1. 
+
+En aquest cas les variables amb una correlació més alta són MntMeatProducts i MntSweetProducts però en cap cas amb un valor prou rellevant.
+
+
+
+# MntMeatProducts
 
 ```{r message= FALSE, warning=FALSE}
 
 corr_matrix <- matrix(nc = 2, nr = 0)
 colnames(corr_matrix) <- c("estimate", "p-value")
-# Calcular el coeficiente de correlación para cada variable cuantitativa
-# con respecto al campo "precio"
 for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
-  if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
-    spearman_test = cor.test(data_clients_normalitzat[,i],
-    data_clients_normalitzat[,9],
-    method = "spearman")
-    corr_coef = spearman_test$estimate
-    p_val = spearman_test$p.value
-    # Add row to matrix
-    pair = matrix(ncol = 2, nrow = 1)
-    pair[1][1] = corr_coef
-    pair[2][1] = p_val
-    corr_matrix <- rbind(corr_matrix, pair)
-    rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
-  }
+if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+spearman_test = cor.test(data_clients_normalitzat[,i],
+data_clients_normalitzat[,10],
+method = "spearman")
+corr_coef = spearman_test$estimate
+p_val = spearman_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = corr_coef
+pair[2][1] = p_val
+corr_matrix <- rbind(corr_matrix, pair)
+rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+}
 }
 print(corr_matrix)
 
 ```
 
-Les variables amb més correlació amb la quantitat de número de Fruita comprada són els que estàn més a prop dels valors -1 i 1. 
 
-En aquest cas són MntMeatProducts i MntSweetProducts amb la que tenen una correlació més alta, però en cap cas és rellevant.
+Les variables amb més correlació amb la quantitat de carn comprada són els que estàn més a prop dels valors -1 i 1. 
 
-ANÀLISIS DE CONTRAST:
-
-Mirem ara de fer prova de contrast d'hipòtesi:
-
-Com que quasi totes les relaciones entre les variables no són homogènees utilitzarem el tets de kruskal entre els diferentes variables i mntsweetproducts, revisant quin valor de p-value dona.
-
-Si és menor a 0,05 concluirem que el els diners que es gasta en productes dolços és variant segons els diferents valors de l'altra variable.
+En aquest cas la variable amb una correlació més alta és NumCatalogPurchases i Income per tant podem concloure que l'ingrés familiar i el número de compres realitzades per catàleg pot està relacionat amb les compres de carn d'un client.
 
 
+# MntFishProducts 
 
 ```{r message= FALSE, warning=FALSE}
 
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
+if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+spearman_test = cor.test(data_clients_normalitzat[,i],
+data_clients_normalitzat[,11],
+method = "spearman")
+corr_coef = spearman_test$estimate
+p_val = spearman_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = corr_coef
+pair[2][1] = p_val
+corr_matrix <- rbind(corr_matrix, pair)
+rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+}
+}
+print(corr_matrix)
+
+```
+
+
+Les variables amb més correlació amb la quantitat de peix comprada són els que estàn més a prop dels valors -1 i 1. 
+
+En aquest cas les variables amb una correlació més alta són MntSweetProducts , MntMeatProducts i MntFruits , però en cap cas prou rellevant.
+
+
+# MntSweetProducts 
+
+```{r message= FALSE, warning=FALSE}
+
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
+if (is.integer(data_clients_normalitzat[,i]) | is.numeric(data_clients_normalitzat[,i])) {
+spearman_test = cor.test(data_clients_normalitzat[,i],
+data_clients_normalitzat[,12],
+method = "spearman")
+corr_coef = spearman_test$estimate
+p_val = spearman_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = corr_coef
+pair[2][1] = p_val
+corr_matrix <- rbind(corr_matrix, pair)
+rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(data_clients_normalitzat)[i]
+}
+}
+print(corr_matrix)
+
+```
+
+
+Les variales amb més correlació amb la quantitat de dolços comprada són els que estàn més a prop dels valors -1 i 1. 
+
+En aquest cas les variables amb una correlació més alta són MntMeatProducts i MntFruits , però en cap cas prou rellevant.
+
+La conclusió que podem extreure en aquest cas és que els ingressos i l'ús del catàleg com a forma de comprar pot està relacionat amb els clients que compren Carn. Hauríem de fer un anàlisi més extens per poder veure com.
+
+# ANÀLISIS DE CONTRAST:
+
+Mirem ara de fer una prova de contrast d'hipòtesi:
+
+Com que quasi totes les relacions entre les variables del dataset original no són homogènees, utilitzarem el tests de kruskal entre els diferentes variables i les variables d'estudi, revisant quin valor de p-value dona.
+
+Si és menor a 0,05 concluirem que els valors de la variable d'estudi és variant segons els diferents valors de l'altra variable.
+
+
+# MntFruits    
+
+```{r message= FALSE, warning=FALSE}
 
 cont_matrix <- matrix(nc = 2, nr = 0)
 colnames(cont_matrix) <- c("statistic", "p-value")
-# Calcular el coeficiente de correlación para cada variable cuantitativa
-# con respecto al campo "precio"
 for (i in 1:(ncol(data_clients) - 1)) {
-  if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
-    kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
-    statistic = kruskal_test$statistic
-    p_val = kruskal_test$p.value
-    # Add row to matrix
-    pair = matrix(ncol = 2, nrow = 1)
-    pair[1][1] = statistic
-    pair[2][1] = p_val
-    cont_matrix <- rbind(cont_matrix, pair)
-    rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
-  }
+if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+kruskal_test = kruskal.test(MntFruits ~ data_clients[,i] , data = data_clients)
+statistic = kruskal_test$statistic
+p_val = kruskal_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = statistic
+pair[2][1] = p_val
+cont_matrix <- rbind(cont_matrix, pair)
+rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+}
+}
+print(cont_matrix)
+
+
+```
+En aquest cas no tots els valors són inferior a 0,05. 
+La variable Id no té rellevància com a dada informativa.
+
+# MntMeatProducts    
+
+```{r message= FALSE, warning=FALSE}
+
+cont_matrix <- matrix(nc = 2, nr = 0)
+colnames(cont_matrix) <- c("statistic", "p-value")
+for (i in 1:(ncol(data_clients) - 1)) {
+if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+kruskal_test = kruskal.test(MntMeatProducts ~ data_clients[,i] , data = data_clients)
+statistic = kruskal_test$statistic
+p_val = kruskal_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = statistic
+pair[2][1] = p_val
+cont_matrix <- rbind(cont_matrix, pair)
+rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+}
 }
 print(cont_matrix)
 
 
 ```
 
-En aquest cas, revisem que tots els valors són inferiors a 0,05, per tant tenen rellevància amb la variable.
+Enaquest cas numCatalogPurchases té un valor superior a 0,05. Un resultat coheremt amb el resultat que ens ha donat anteriorment revisant la correlació de les variables.
 
-Fem també una prova de t-test per les dades preparades anteriorment. Per molt que no siguin normals, al tenir un tamany prou gran podem utilitzar la prova. 
+# MntFishProducts    
+
+```{r message= FALSE, warning=FALSE}
+
+cont_matrix <- matrix(nc = 2, nr = 0)
+colnames(cont_matrix) <- c("statistic", "p-value")
+for (i in 1:(ncol(data_clients) - 1)) {
+if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+kruskal_test = kruskal.test(MntFishProducts ~ data_clients[,i] , data = data_clients)
+statistic = kruskal_test$statistic
+p_val = kruskal_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = statistic
+pair[2][1] = p_val
+cont_matrix <- rbind(cont_matrix, pair)
+rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+}
+}
+print(cont_matrix)
+
+
+```
+
+En aquest cas no tots els valors són inferior a 0,05. 
+La variable Id no té rellevància com a dada informativa.
+
+
+# MntSweetProducts    
+
+```{r message= FALSE, warning=FALSE}
+
+cont_matrix <- matrix(nc = 2, nr = 0)
+colnames(cont_matrix) <- c("statistic", "p-value")
+for (i in 1:(ncol(data_clients) - 1)) {
+if (is.integer(data_clients[,i]) | is.numeric(data_clients[,i])) {
+kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
+statistic = kruskal_test$statistic
+p_val = kruskal_test$p.value
+# Add row to matrix
+pair = matrix(ncol = 2, nrow = 1)
+pair[1][1] = statistic
+pair[2][1] = p_val
+cont_matrix <- rbind(cont_matrix, pair)
+rownames(cont_matrix)[nrow(cont_matrix)] <- colnames(data_clients)[i]
+}
+}
+print(cont_matrix)
+
+
+```
+En aquest cas no tots els valors són inferior a 0,05. 
+La variable Id no té rellevància com a dada informativa.
+
+
+Fem també una prova de t-test per les dades preparades anteriorment, segons als estudis del client.
+
+Per molt que no siguin normals, en els casos que tenim un tamany prou gran, podem utilitzar la prova. 
 
 Revisem el test entre els diferents grups d'estudis i estat civil per veure si hi ha alguna relació:
 
 
+
+
+Revisem el número d'observaciones per dataset:
+
+
 ```{r message= FALSE, warning=FALSE}
 
-print(paste("t-students basic vs graduation:",t.test(data_clients.basic$MntFruits, data_clients.graduation$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs cycle:",t.test(data_clients.basic$MntFruits, data_clients.cycle$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs master:",t.test(data_clients.basic$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs master:",t.test(data_clients.basic$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
-print(paste("t-students graduation vs cycle:",t.test(data_clients.graduation$MntFruits, data_clients.cycle$MntFruits,alternative = "less")$p.value))
-print(paste("t-students graduation vs master:",t.test(data_clients.graduation$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
-print(paste("t-students phd vs alternative:",t.test(data_clients.graduation$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
-print(paste("t-students cycle vs alternative:",t.test(data_clients.cycle$MntFruits, data_clients.master$MntFruits,alternative = "less")$p.value))
-print(paste("t-students cycle vs phd:",t.test(data_clients.cycle$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
-print(paste("t-students master vs alternativa:",t.test(data_clients.master$MntFruits, data_clients.phd$MntFruits,alternative = "less")$p.value))
+
+print(paste("Número de Registres clients.basic: ", nrow(data_clients.basic)))
+print(paste("Número de Registres clients.graduation: ",nrow(data_clients.graduation)))
+print(paste("Número de Registres clients.cycle: ",nrow(data_clients.cycle)))
+print(paste("Número de Registres clients.master: ",nrow(data_clients.master)))
+print(paste("Número de Registres clients.phd: ",nrow(data_clients.phd)))
+
+print(paste("Número de Registres clients.divorced: ",nrow(data_clients.divorced)))
+print(paste("Número de Registres clients.married: ",nrow(data_clients.married)))
+print(paste("Número de Registres clients.single: ",nrow(data_clients.single)))
+print(paste("Número de Registres clients.together: ",nrow(data_clients.together)))
+print(paste("Número de Registres clients.widow: ",nrow(data_clients.widow)))
+
+```
+
+En el nostre cas, totes les mostres són majors de 30 registres per tant podem utilitzar l'anàlisis de contrast de t-student amb aquests conjunts de dades:
+
+Fem un estudi reswpecte el que es gasta en fruita els diferents subconjunts que anteriorment hem calculat:
+
+
+```{r message= FALSE, warning=FALSE}
+print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs married:",t.test(data_clients.basic$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs single:",t.test(data_clients.basic$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs together:",t.test(data_clients.basic$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs single:",t.test(data_clients.graduation$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs together:",t.test(data_clients.graduation$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs widow:",t.test(data_clients.graduation$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs divorced:",t.test(data_clients.cycle$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs married:",t.test(data_clients.cycle$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs single:",t.test(data_clients.cycle$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs together:",t.test(data_clients.cycle$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students cycle vs widow:",t.test(data_clients.cycle$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs divorced:",t.test(data_clients.master$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs married:",t.test(data_clients.master$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs single:",t.test(data_clients.master$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs together:",t.test(data_clients.master$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students master vs widow:",t.test(data_clients.master$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs divorced:",t.test(data_clients.phd$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs married:",t.test(data_clients.phd$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs single:",t.test(data_clients.phd$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs together:",t.test(data_clients.phd$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
+
+```
+    En aquest cas veiem que els p-valors resultants de la prova t de Student més alts són els resultants dels clients que tenen estudis de graduació i de cicle per a qualsevol estat marital. Això vol dir que no s'observen diferències estadísticament significatives.
+    En canvi, en els altres casos,el p-valor és inferior a 0.05,  per tant en aquets casos podem concloure que és més rellevant l'estat marital que els estudis a l'hora de comprar fruita.
+
+Farem el mateix estudi amb les altres variables on treurem unes conclusions semblants en tots els casos:
+
+# MntMeatProducts
+
+
+```{r message= FALSE, warning=FALSE}
+print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs married:",t.test(data_clients.basic$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs single:",t.test(data_clients.basic$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs together:",t.test(data_clients.basic$MntMeatProducts, data_clients.together$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs single:",t.test(data_clients.graduation$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs together:",t.test(data_clients.graduation$MntMeatProducts, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students graduation vs widow:",t.test(data_clients.graduation$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs divorced:",t.test(data_clients.cycle$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs married:",t.test(data_clients.cycle$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs single:",t.test(data_clients.cycle$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs together:",t.test(data_clients.cycle$MntMeatProducts, data_clients.together$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs widow:",t.test(data_clients.cycle$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students master vs divorced:",t.test(data_clients.master$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students master vs married:",t.test(data_clients.master$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students master vs single:",t.test(data_clients.master$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students master vs together:",t.test(data_clients.master$MntMeatProducts, data_clients.together$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students master vs widow:",t.test(data_clients.master$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs divorced:",t.test(data_clients.phd$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs married:",t.test(data_clients.phd$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs single:",t.test(data_clients.phd$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs together:",t.test(data_clients.phd$MntMeatProducts, data_clients.together$MntMeatProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
 
 
 
 ```
-D'aquí podem concloure que com més alts són els estudis més semblants són les seves compres respecte a la fruita.
-No es pot fer la mateixa proba per els estats civils ja que la majoria de clients estan casats, divorciats o junts:
+
+# MntFishProducts
 
 ```{r message= FALSE, warning=FALSE}
-summary(data_clients$Marital_Status)
+
+
+print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntFishProducts, data_clients.divorced$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs married:",t.test(data_clients.basic$MntFishProducts, data_clients.married$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs single:",t.test(data_clients.basic$MntFishProducts, data_clients.single$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs together:",t.test(data_clients.basic$MntFishProducts, data_clients.together$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntFishProducts, data_clients.widow$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntFishProducts, data_clients.divorced$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntFishProducts, data_clients.married$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs single:",t.test(data_clients.graduation$MntFishProducts, data_clients.single$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs together:",t.test(data_clients.graduation$MntFishProducts, data_clients.together$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs widow:",t.test(data_clients.graduation$MntFishProducts, data_clients.widow$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs divorced:",t.test(data_clients.cycle$MntFishProducts, data_clients.divorced$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs married:",t.test(data_clients.cycle$MntFishProducts, data_clients.married$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs single:",t.test(data_clients.cycle$MntFishProducts, data_clients.single$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs together:",t.test(data_clients.cycle$MntFishProducts, data_clients.together$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs widow:",t.test(data_clients.cycle$MntFishProducts, data_clients.widow$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students master vs divorced:",t.test(data_clients.master$MntFishProducts, data_clients.divorced$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students master vs married:",t.test(data_clients.master$MntFishProducts, data_clients.married$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students master vs single:",t.test(data_clients.master$MntFishProducts, data_clients.single$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students master vs together:",t.test(data_clients.master$MntFishProducts, data_clients.together$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students master vs widow:",t.test(data_clients.master$MntFishProducts, data_clients.widow$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs divorced:",t.test(data_clients.phd$MntFishProducts, data_clients.divorced$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs married:",t.test(data_clients.phd$MntFishProducts, data_clients.married$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs single:",t.test(data_clients.phd$MntFishProducts, data_clients.single$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs together:",t.test(data_clients.phd$MntFishProducts, data_clients.together$MntFishProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntFishProducts, data_clients.widow$MntFishProducts,alternative = "less")$p.value))
+
 ```
 
+
+
+# MntSweetProducts
+
+
+```{r message= FALSE, warning=FALSE}
+
+print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntSweetProducts, data_clients.divorced$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs married:",t.test(data_clients.basic$MntSweetProducts, data_clients.married$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs single:",t.test(data_clients.basic$MntSweetProducts, data_clients.single$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs together:",t.test(data_clients.basic$MntSweetProducts, data_clients.together$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntSweetProducts, data_clients.divorced$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntSweetProducts, data_clients.married$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs single:",t.test(data_clients.graduation$MntSweetProducts, data_clients.single$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs together:",t.test(data_clients.graduation$MntSweetProducts, data_clients.together$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students graduation vs widow:",t.test(data_clients.graduation$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs divorced:",t.test(data_clients.cycle$MntSweetProducts, data_clients.divorced$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs married:",t.test(data_clients.cycle$MntSweetProducts, data_clients.married$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs single:",t.test(data_clients.cycle$MntSweetProducts, data_clients.single$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs together:",t.test(data_clients.cycle$MntSweetProducts, data_clients.together$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students cycle vs widow:",t.test(data_clients.cycle$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students master vs divorced:",t.test(data_clients.master$MntSweetProducts, data_clients.divorced$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students master vs married:",t.test(data_clients.master$MntSweetProducts, data_clients.married$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students master vs single:",t.test(data_clients.master$MntSweetProducts, data_clients.single$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students master vs together:",t.test(data_clients.master$MntSweetProducts, data_clients.together$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students master vs widow:",t.test(data_clients.master$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs divorced:",t.test(data_clients.phd$MntSweetProducts, data_clients.divorced$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs married:",t.test(data_clients.phd$MntSweetProducts, data_clients.married$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs single:",t.test(data_clients.phd$MntSweetProducts, data_clients.single$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs together:",t.test(data_clients.phd$MntSweetProducts, data_clients.together$MntSweetProducts,alternative = "less")$p.value))
+print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
+
+
+
+```
+
+
+
+
+# ANALISIS DE REGRESSIÓ:
+
+
+Per obtenir un model de regressió lineal eficient ho farem a partir de les variables amb més correlació que haguem trobat de les variables en estudi. 
+
+En aques cas, i segons els estudis anteriors, ens centrarem amb les segÜents variables: 
+
+Farem un estudi de regresió lineal entre la variable MntMeatProducts i
+
+- Income
+- NumCatalogPurchase 
+
+# Generació del model: 
+
+```{r message= FALSE, warning=FALSE}
+
+model1 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  , data = data_clients)
+model2 <- lm(data_clients$MntMeatProducts ~  data_clients$NumCatalogPurchase  , data = data_clients)
+model3 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase  , data = data_clients)
+model4 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$MntFruits  , data = data_clients)
+model5 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$MntFruits + data_clients$MntFishProducts  , data = data_clients)
+
+
+
+
+
+tabla.quoficients <- matrix(c(
+1, summary(model1)$r.squared,
+2, summary(model2)$r.squared,
+3, summary(model3)$r.squared,
+4, summary(model4)$r.squared,
+5, summary(model5)$r.squared),
+
+ncol = 2, byrow = TRUE)
+colnames(tabla.quoficients) <- c("Model", "R^2")
+tabla.quoficients
+
+
+```
+
+En aquest cas veiem que tots tenen una quoficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
+
+
+
+*****
 ## Representació dels resultats a partir de taules gràfiques
+*****
 
 Les taules gràfiques han d'ajudar a representat els resultats mostrats anteriorment.
 
