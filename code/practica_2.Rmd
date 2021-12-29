@@ -84,22 +84,10 @@ D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
 - ID: identificador únic
 
   **Perfil del client**:
-- Year_Birth
-- Education
-- Marital_status
-- Income
-- Kidhome
-- Teenhome
-- Dt_Customer
+- Year_Birth, Education, Marital_status, Income, Kidhome, Teenhome, Dt_Customer
 
   **Gasto per productes alimentaris**:
-- MntFruits
-- MntMeatProducts
-- MntFishProducts
-- MntSweetProducts
-- NumWebPurchases
-- NumCatalogPurchases
-- NumStorePurchases
+- MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases
 
 La resta de variables, degut a que no es faran servir, s'eliminen del conjunt de dades:
 
@@ -159,7 +147,6 @@ Degut a que es tracta d'1% dels registres totals, es preferible eliminar-los ja 
 
 ```{r message= FALSE, warning=FALSE}
 data_clients <- na.omit(data_clients)
-colSums(is.na(data_clients))
 ```
 
 *****
@@ -170,6 +157,19 @@ El següent pas és identificar els valors extrems, que són les dades que es tr
 
 Utilitzarem la funció boxplots.stats() de R per anar revisant variable a variable si trobem registres amb valors extrems 
 que es puguin considerar incorrectes o que ens pugui implicar una desviació important. 
+
+Es visualitzen la gràfica boxPlot d'algunes de les variables, i posteriorment es fa l'anàlisi de cadascuna d'elles:
+
+```{r message= FALSE, warning=FALSE}
+par(mfrow=c(2,3))
+
+extrems_dt_customer <- boxplot(as.numeric(substring(data_clients$Dt_Customer,7,10)), main="DT_CUSTOMER")
+extrems_mntFruits <- boxplot(data_clients$MntFruits, main="MntFruits")
+extrems_mntFish <- boxplot(data_clients$MntFishProducts, main="MntFishProducts")
+extrems_mntSweet <- boxplot(data_clients$MntSweetProducts, main = "MntSweetProducts")
+extrems_mntMeat <- boxplot(data_clients$MntMeatProducts, main = "MntMeatProducts")
+extrems_income <- boxplot(data_clients$Income, main = "Income")
+```
 
 VARIABLE **YEAR_BIRTH**
 
@@ -210,7 +210,6 @@ VARIABLE **DT_CUSTOMER**:
 ```{r message= FALSE, warning=FALSE}
 # Revisem els anys de les dates de clients.
 
-boxplot(as.numeric(substring(data_clients$Dt_Customer,7,10)))
 table(as.numeric(substring(data_clients$Dt_Customer,7,10)))
 
 ## Tant la seva representació en boxplot com en taula és correcta.
@@ -233,27 +232,27 @@ summary(data_clients$NumCatalogPurchases)
 ## Els valors extrems són valors que es poden donar. Els donem per bons.
 ```
 VARIABLE **MNTFRUITS**:
+
 ```{r message= FALSE, warning=FALSE}
 ## Al tenir tants valors diferents, representem el seu boxplot:
 
-boxplot(data_clients$MntFruits)
 summary(data_clients$MntFruits)
 
 ## Veiem que hi han valors que estan fora de l’esperat però no estan allunyats entre ells. A més, són valors possibles.
 ## Ho donem per bo.
 ```
 VARIABLE **MNTFISHPRODUCTS**:
+
 ```{r message= FALSE, warning=FALSE}
  
 ## Al tenir tants valors diferents, representem el seu boxplot
-boxplot(data_clients$MntFishProducts)
 summary(data_clients$MntFishProducts)
 ## Veiem que hi han valors que estan fora de l’esperat però no estan allunyats entre ells. A més, són valors possibles.
 ## Ho donem per bo.
 ```
 VARIABLE **MNTSWEETPRODUCTS**:
+
 ```{r message= FALSE, warning=FALSE}
-boxplot(data_clients$MntSweetProducts)
 summary(data_clients$MntSweetProducts)
 
 ## Veiem que hi han un valor que estan molt fora de ho esperat.
@@ -264,7 +263,6 @@ data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- median(da
 VARIABLE **MNTMEATPRODUCTS**;
 ```{r message= FALSE, warning=FALSE}
 ## Al tenir tants valors diferents, representem el seu boxplot
-boxplot(data_clients$MntMeatProducts)
 summary(data_clients$MntMeatProducts)
 ## Sembla que hi han uns 4 valors superiors dels 1500 i diferenciats dels altres.
 table(data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] )
@@ -275,7 +273,6 @@ data_clients$MntMeatProducts[(data_clients$MntMeatProducts>1500)] <- median(data
 VARIABLE **INCOME**:
 ```{r message= FALSE, warning=FALSE}
 ## Al tenir tants valors diferents, representem el seu boxplot
-boxplot(data_clients$Income)
 summary(data_clients$Income)
 ## Hi ha un valor molt superior al altres.
 table(data_clients$Income[(data_clients$Income>300000)] )
@@ -322,7 +319,7 @@ Les variables amb les que es mesurarà la normalitat són les del tipus numèric
 
 ```{r message= FALSE, warning=FALSE}
 options(scipen = 100)
-par(mfrow=c(2,2))
+par(mfrow=c(3,4))
 
 p_value <- 0.05
 
@@ -359,8 +356,6 @@ if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if (!require('forecast')) install.packages('forecast'); library('forecast')
 if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
 
-par(mfrow=c(2,2))
-
 data_clients_normalitzat <- data_clients
 data_clients_normalitzat$MntFruits <- BoxCox(data_clients[,c('MntFruits')], 1/2)
 data_clients_normalitzat$MntMeatProducts <- BoxCox(data_clients[,c('MntMeatProducts')], 1/2)
@@ -369,43 +364,6 @@ data_clients_normalitzat$MntSweetProducts <- BoxCox(data_clients[,c('MntSweetPro
 data_clients_normalitzat$NumWebPurchases <- BoxCox(data_clients[,c('NumWebPurchases')], 1/2)
 data_clients_normalitzat$NumCatalogPurchases <- BoxCox(data_clients[,c('NumCatalogPurchases')], 1/2)
 data_clients_normalitzat$NumStorePurchases <- BoxCox(data_clients[,c('NumStorePurchases')], 1/2)
-
-ggplotFruits <- ggplot(data_clients_normalitzat, aes(x = MntFruits)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("MntFruits")
-
-ggplotMeat <- ggplot(data_clients_normalitzat, aes(x = MntMeatProducts)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("MntMeatProducts")
-
-ggplotFish <- ggplot(data_clients_normalitzat, aes(x = MntFishProducts)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("MntFishProducts")
-
-ggplotSweet <- ggplot(data_clients_normalitzat, aes(x = MntSweetProducts)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("MntSweetProducts")
-
-ggplotWebPurchases <- ggplot(data_clients_normalitzat, aes(x = NumWebPurchases)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("NumWebPurchases")
-
-ggplotCatalogPurchases <- ggplot(data_clients_normalitzat, aes(x = NumCatalogPurchases)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("NumCatalogPurchases")
-
-ggplotStorePurchases <- ggplot(data_clients_normalitzat, aes(x = NumStorePurchases)) +
-  geom_histogram() +
-  ylab("Nombre total") +
-  xlab("NumStorePurchases")
-
-grid.arrange(ggplotFruits, ggplotMeat, ggplotFish, ggplotSweet, ggplotWebPurchases, ggplotCatalogPurchases, ggplotStorePurchases)
 
 ```
 
@@ -925,33 +883,12 @@ grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
 ```
 
 En aquest cas s'observa que l'edat (any de naixement) és una bona variable que influeix en la compra de productes.
-Per això es discretitza l'edat en 5 segments, i es visualitza per a cada segment d'edat i estat civil, el nombre de productes comprats.
+Per això es discretitza l'edat en 5 segments, i es visualitza per a cada segment d'edat i educació, el nombre de productes comprats.
 
 ```{r message= FALSE, warning=FALSE}
 
 data_clients["segment_edat"] <- cut(data_clients$Year_Birth, breaks = c(0, 1950, 1960, 1970, 1980, Inf),
                   labels = c("<1950", "1950-1959", "1960-1969", "1970-1979", ">1980"))
-
-
-plotMeat <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntMeatProducts)) + 
-    geom_bar(position="fill", stat="identity")
-
-plotFish <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntFishProducts)) + 
-    geom_bar(position="fill", stat="identity")
-
-plotFruits <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntFruits)) + 
-    geom_bar(position="fill", stat="identity")
-
-plotSweet <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntSweetProducts)) + 
-    geom_bar(position="fill", stat="identity")
-
-grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
-
-```
-
-Es fa el mateix per a cada segment d'edat i l'educació, visualitzar el nombre de productes comprats:
-
-```{r message= FALSE, warning=FALSE}
 
 plotMeat <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntMeatProducts)) + 
     geom_bar(position="fill", stat="identity")
