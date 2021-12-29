@@ -1,7 +1,7 @@
 ---
 title: "Tipologia i cicle de vida de les dades - Pràctica 2"
 author: "Autor: Isabel Barrera Benavent i Maria Font Sánchez"
-date: "Decembre 2021"
+date: "Desembre 2021"
 output:
   word_document: default
   pdf_document:
@@ -36,35 +36,35 @@ D’aquesta manera l’empresa pot prendre decisions respecte als productes que 
 
 Els atributs que conté el dataset són els següents: 
 
-- ID:   Identificador únic del client.
-- Year_Birth: Any de naixement del client.
-- Education: Nivell d’educació del client.
-- Marital_Status: Estat marital del client. 
-- Income: Ingrés familiar del client.
-- Kidhome: Número de fills amb qui viu el client.	
-- Teenhome: Número d’adolescents amb qui viu el client.		
-- Dt_Customer: Data en que s’inscriu com client de l’empresa.	
-- Recency: Número de dies que han passat des de l’última compra del client.
-- MntWines: Quantitat gastada en vi durant els últims dos anys per el client.
-- MntFruits: Quantitat gastada en vi durant els últims dos anys per el client.	
-- MntMeatProducts: Quantitat gastada en carn durant els últims dos anys per el client.
-- MntFishProducts: Quantitat gastada en peix durant els últims dos anys per el client.
-- MntSweetProducts: Quantitat gastada en dolços durant els últims dos anys per el client.
-- MntGoldProds: Quantitat gastada en or durant els últims dos anys per el client.
-- NumDealsPurchases: Número de compres realitzades amb descomptes per el client. 
-- NumWebPurchases: Número de compres realitzades des de la web de l’empresa per el  client.
-- NumCatalogPurchases: Número de compres realitzades des del catàleg de l’empresa per el client.
-- NumStorePurchases: Número de compres realitzades directament en una tenda de l’empresa per el client.
-- NumWebVisitsMonth: Número de  visites realitzades durant l’últim mes a la web de l’empresa del client.
-- AcceptedCmp3: 1 si el client va acceptar l’oferta en la tercera campanya, 0 en cas contrari
-- AcceptedCmp4: 1 si el client va acceptar l’oferta en la quarta campanya, 0 en cas contrari.
-- AcceptedCmp5: 1 si el client va acceptar l’oferta en la cinquena campanya, 0 en cas contrari.
-- AcceptedCmp1: 1 si el client va acceptar l’oferta en la primera campanya, 0 en cas contrari.
-- AcceptedCmp2: 1 si el client va acceptar l’oferta en la segons campanya, 0 en cas contrari.
-- Complain: 1 si hi ha hagut alguna queixa del client en els últims dos anys. 0 en cas contrari.
-- Z_CostContact: Cost Contacte. Té valor 3 per defecte.
-- Z_Revenue: Ingressos del client: Té valor 11 per defecte.	
-- Response: 1 si el client va acceptar l’oferta en la última campanya, 0 en cas contrari.
+- **ID**:   Identificador únic del client.
+- **Year_Birth***: Any de naixement del client.
+- **Education**: Nivell d’educació del client.
+- **Marital_Status**: Estat marital del client. 
+- **Income**: Ingrés familiar del client.
+- **Kidhome**: Número de fills amb qui viu el client.	
+- **Teenhome**: Número d’adolescents amb qui viu el client.		
+- **Dt_Customer**: Data en que s’inscriu com client de l’empresa.	
+- **Recency**: Número de dies que han passat des de l’última compra del client.
+- **MntWines**: Quantitat gastada en vi durant els últims dos anys per el client.
+- **MntFruits**: Quantitat gastada en vi durant els últims dos anys per el client.	
+- **MntMeatProducts**: Quantitat gastada en carn durant els últims dos anys per el client.
+- **MntFishProducts**: Quantitat gastada en peix durant els últims dos anys per el client.
+- **MntSweetProducts**: Quantitat gastada en dolços durant els últims dos anys per el client.
+- **MntGoldProds**: Quantitat gastada en or durant els últims dos anys per el client.
+- **NumDealsPurchases**: Número de compres realitzades amb descomptes per el client. 
+- **NumWebPurchases**: Número de compres realitzades des de la web de l’empresa per el  client.
+- **NumCatalogPurchases**: Número de compres realitzades des del catàleg de l’empresa per el client.
+- **NumStorePurchases**: Número de compres realitzades directament en una tenda de l’empresa per el client.
+- **NumWebVisitsMonth**: Número de  visites realitzades durant l’últim mes a la web de l’empresa del client.
+- **AcceptedCmp3**: 1 si el client va acceptar l’oferta en la tercera campanya, 0 en cas contrari
+- **AcceptedCmp4**: 1 si el client va acceptar l’oferta en la quarta campanya, 0 en cas contrari.
+- **AcceptedCmp5**: 1 si el client va acceptar l’oferta en la cinquena campanya, 0 en cas contrari.
+- **AcceptedCmp1**: 1 si el client va acceptar l’oferta en la primera campanya, 0 en cas contrari.
+- **AcceptedCmp2**: 1 si el client va acceptar l’oferta en la segons campanya, 0 en cas contrari.
+- **Complain**: 1 si hi ha hagut alguna queixa del client en els últims dos anys. 0 en cas contrari.
+- **Z_CostContact**: Cost Contacte. Té valor 3 per defecte.
+- **Z_Revenue**: Ingressos del client: Té valor 11 per defecte.	
+- **Response**: 1 si el client va acceptar l’oferta en la última campanya, 0 en cas contrari.
 
 A partir del conjunt de dades d’aquest dataset, es pretén estudiar com influeix el perfil del client amb la quantitat gastada en les compres de productes d’aliments. Per això, s’aplicaran mètodes de regressió per a veure la relació entre les diferents variables, i mètodes de classificació per a crear el perfil del client.
 Aquest estudi és important per a les empreses de ventes de productes (tan online com físiques) per a poder identificar el tipus de client que compra cada producte i crear així campanyes de màrqueting específiques.
@@ -510,7 +510,7 @@ Les variables amb més correlació amb la quantitat de carn comprada són els qu
 En aquest cas la variable amb una correlació més alta és NumCatalogPurchases i Income per tant podem concloure que l'ingrés familiar i el número de compres realitzades per catàleg pot està relacionat amb les compres de carn d'un client.
 
 
-# MntFishProducts 
+##### MntFishProducts 
 
 ```{r message= FALSE, warning=FALSE}
 
@@ -886,14 +886,13 @@ tabla.quoficients
 
 En aquest cas veiem que tots tenen una coeficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
 
-
 *****
 ## Representació dels resultats a partir de taules gràfiques
 *****
 
 Les taules gràfiques han d'ajudar a representat els resultats mostrats anteriorment.
 
-Primerament, es comprova que les compmres realitzades a la fruita i la carna en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
+Primerament, es comprova que les compres realitzades a la fruita i la carn en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
 
 ```{r message= FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library(ggplot2)
@@ -990,3 +989,33 @@ grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
 
 ```
 
+
+*****
+## Resolució del problema
+*****
+A partir dels resultats obtinguts, quines són les conclusions?
+Els resultats permeten respondre al problema?
+
+L’objectiu d’aquest estudi és identificar el tipus de client que compra cada producte i crear així campanyes de màrqueting específiques.
+
+Abans de començar amb l’anàlisi de les dades, s’han seleccionat aquelles variables que aporten més a la resolució del problema plantejar (són variables relacionades amb el perfil del client i el gasto total segons el tipus de producte).
+
+Posteriorment, s’han eliminat  els elements buits de la variable ‘Income’, ja que era l’única, la resta tenien els valors informats. I s’han tractat els valors extrems de ‘Year_Birth’, ‘MntSweetProducts’, ‘MntMeatProducts’ i ‘Income’.
+
+Un cop les dades estaves ja preparades, s’ha iniciat l’anàlisi estadístic. Primerament, s’ha aplicat un anàlisi de correlació per identificar les dependències entre les variables. Es comprova que hi ha una dependència entre les compres dels diferents productes carn, dolços, peix i fruita. I més concretament, entre els productes de carn, l’ingrés familiar i el número de compres realitzada. Després, es fa un anàlisi de contrast d’hipòtesi que permet comparar les mitjanes entre els diferents grups. Aquí hem pogut observar que l’estat marital és més rellevant en les compres que no pas els estudis.
+
+Finalment, amb la representació dels resultats es conclou el següent:
+
+- Els aspectes que més influeixen en la compra són els ingressos anuals i l’edat del client. L’educació ens indica que els clients amb estudis bàsics, compren menys, però això es degut a que tenen feines menys qualificades i amb menys ingressos.
+- Els clients més habituals són els nascuts entre 1970 i 1975, però el gasto per a cada producte és baix. 
+- Hi ha una relació directa entre els ingressos mensuals i el gasto fet en les compres dels productes. Tot i així, és important saber que la majoria dels clients tenen un ingrés de 35,000 dollars anuals. I el gasto de productes augmenta a partir dels 45,000 i 50,000 dollars.
+- Pel que fa als estudis, els clients més habituals són els graduats, a excepció dels nascuts abans del 1950 que tenen un PhD.
+
+
+
+Contribucions                   Signatura
+-------------------------       -------------------------------------------
+Investigació prèvia             Isabel Barrera Benavent, Maria Font Sánchez  
+Redacció de les respostes       Isabel Barrera Benavent, Maria Font Sánchez 
+Desenvolupament del codi        Isabel Barrera Benavent, Maria Font Sánchez 
+-------------------------       -------------------------------------------
