@@ -10,10 +10,16 @@ Els membres que formen l'equip de treball per la realització de la pràctica s�
 
 # CODI FONT
 
-TIP-PRA2/code/practica_2.Rmd: Codi en el llenguatge R de la realització de la pràctica.
+[TIP-PRA2/code/practica_2.Rmd](https://github.com/mfontsanc/TIP-PRA2/blob/main/code/practica_2.Rmd): Codi en el llenguatge R de la realització de la pràctica.
 
 # DATASET
 
 Podeu trovar el dataset que hem decidit fer servir per aquesta pràctica en el següent url: 
 
 https://www.kaggle.com/imakash3011/customer-personality-analysis
+
+I en la carpeta [data/marketing_campaign.csv](https://github.com/mfontsanc/TIP-PRA2/blob/main/data/marketing_campaign.csv) d'aquest repositori.
+
+# DOCUMENTACIÓ
+
+
