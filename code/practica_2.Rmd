@@ -351,16 +351,16 @@ for (i in 1:ncol(data_clients)) {
 Es pot observar en el diagrama Q-Q i fent el test Shapiro-Wilk, que cap de les variables està normalitzada.
 
 Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases. 
-En aquest cas s'aplica la transformació Box-Cox:
+En aquest cas s'aplica la transformació Box-Cox de la llibreria forecast:
 
 ```{r message= FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if (!require('forecast')) install.packages('forecast'); library('forecast')
+if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
 
 par(mfrow=c(2,2))
 
 data_clients_normalitzat <- data_clients
-data_prep <- data_clients[,c('MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
 data_clients_normalitzat$MntFruits <- BoxCox(data_clients[,c('MntFruits')], 1/2)
 data_clients_normalitzat$MntMeatProducts <- BoxCox(data_clients[,c('MntMeatProducts')], 1/2)
 data_clients_normalitzat$MntFishProducts <- BoxCox(data_clients[,c('MntFishProducts')], 1/2)
@@ -369,40 +369,42 @@ data_clients_normalitzat$NumWebPurchases <- BoxCox(data_clients[,c('NumWebPurcha
 data_clients_normalitzat$NumCatalogPurchases <- BoxCox(data_clients[,c('NumCatalogPurchases')], 1/2)
 data_clients_normalitzat$NumStorePurchases <- BoxCox(data_clients[,c('NumStorePurchases')], 1/2)
 
-ggplot(data_clients_normalitzat, aes(x = MntFruits)) +
+ggplotFruits <- ggplot(data_clients_normalitzat, aes(x = MntFruits)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("MntFruits")
 
-ggplot(data_clients_normalitzat, aes(x = MntMeatProducts)) +
+ggplotMeat <- ggplot(data_clients_normalitzat, aes(x = MntMeatProducts)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("MntMeatProducts")
 
-ggplot(data_clients_normalitzat, aes(x = MntFishProducts)) +
+ggplotFish <- ggplot(data_clients_normalitzat, aes(x = MntFishProducts)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("MntFishProducts")
 
-ggplot(data_clients_normalitzat, aes(x = MntSweetProducts)) +
+ggplotSweet <- ggplot(data_clients_normalitzat, aes(x = MntSweetProducts)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("MntSweetProducts")
 
-ggplot(data_clients_normalitzat, aes(x = NumWebPurchases)) +
+ggplotWebPurchases <- ggplot(data_clients_normalitzat, aes(x = NumWebPurchases)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("NumWebPurchases")
 
-ggplot(data_clients_normalitzat, aes(x = NumCatalogPurchases)) +
+ggplotCatalogPurchases <- ggplot(data_clients_normalitzat, aes(x = NumCatalogPurchases)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("NumCatalogPurchases")
 
-ggplot(data_clients_normalitzat, aes(x = NumStorePurchases)) +
+ggplotStorePurchases <- ggplot(data_clients_normalitzat, aes(x = NumStorePurchases)) +
   geom_histogram() +
   ylab("Nombre total") +
   xlab("NumStorePurchases")
+
+grid.arrange(ggplotFruits, ggplotMeat, ggplotFish, ggplotSweet, ggplotWebPurchases, ggplotCatalogPurchases, ggplotStorePurchases)
 
 ```
 
@@ -926,7 +928,6 @@ Es pot observar que hi ha una gran diferència de les persones amb estudis bàsi
 Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat amb les variables en referència a la compra de fruita, carn, peix i dolços:
 
 ```{r message= FALSE, warning=FALSE}
-if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
 
 plotMeat <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntMeatProducts) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
@@ -945,4 +946,67 @@ grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
 ```
 
 En aquest cas s'observa que l'edat (any de naixement) és una bona variable que influeix en la compra de productes.
+Per això es discretitza l'edat en 5 segments, i es visualitza per a cada segment d'edat i estat civil, el nombre de productes comprats.
+
+```{r message= FALSE, warning=FALSE}
+
+data_clients["segment_edat"] <- cut(data_clients$Year_Birth, breaks = c(0, 1950, 1960, 1970, 1980, Inf),
+                  labels = c("<1950", "1950-1959", "1960-1969", "1970-1979", ">1980"))
+
+
+plotMeat <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntMeatProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotFish <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntFishProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotFruits <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntFruits)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotSweet <- ggplot(data_clients, aes(fill=Marital_Status, y=segment_edat, x=MntSweetProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+
+```
+
+Es fa el mateix per a cada segment d'edat i l'educació, visualitzar el nombre de productes comprats:
+
+```{r message= FALSE, warning=FALSE}
+
+plotMeat <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntMeatProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotFish <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntFishProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotFruits <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntFruits)) + 
+    geom_bar(position="fill", stat="identity")
+
+plotSweet <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntSweetProducts)) + 
+    geom_bar(position="fill", stat="identity")
+
+grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+
+```
+
+Finalment, es comprova les compres realitzades segons els diners gastats en les compres dels productes:
+
+```{r message= FALSE, warning=FALSE}
+
+plotMeat <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntMeatProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotFruits <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntFruits) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotFish <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntFishProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+plotSweet <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntSweetProducts) ) +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
+
+grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+
+```
 
