@@ -14,7 +14,6 @@ output:
     toc: yes
     toc_depth: 2
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(eval=T, echo=T, fig.width=12, fig.height=8)
 ```
@@ -32,7 +31,6 @@ Es tracta d’una enquesta feta a 2.240 clients d’una empresa per a poder valo
 i analitzar els gustos i necessitats que tenen segons el tipus de clients que siguin. 
 
 D’aquesta manera l’empresa pot prendre decisions respecte als productes que ven o fer campanyes de màrqueting més específiques segons el tipus de clients i producte.
-
 
 Els atributs que conté el dataset són els següents: 
 
@@ -87,15 +85,13 @@ D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
 - Year_Birth, Education, Marital_status, Income, Kidhome, Teenhome, Dt_Customer
 
   **Gasto per productes alimentaris**:
-- MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases
+- MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases.
 
 La resta de variables, degut a que no es faran servir, s'eliminen del conjunt de dades:
 
 ```{r message= FALSE, warning=FALSE}
-data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome', 
-                                 'Dt_Customer', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts',
-                                 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
-
+data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome',  'Dt_Customer', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts',
+'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
 ```
 
 *****
@@ -123,7 +119,6 @@ Totes dues variables es poden categoritzar fent ús de la funció ‘as.factor�
 data_clients$Education <- as.factor(data_clients$Education)
 data_clients$Marital_Status <- as.factor(data_clients$Marital_Status)
 ```
-
 
 *****
 ## Zeros o elements buits
@@ -257,7 +252,6 @@ summary(data_clients$MntSweetProducts)
 
 ## Veiem que hi han un valor que estan molt fora de ho esperat.
 ## Al ser només un el canviem per la mitjana.
-
 data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- median(data_clients$MntSweetProducts)
 ```
 VARIABLE **MNTMEATPRODUCTS**;
@@ -292,20 +286,17 @@ Per això, es seleccionaran les dades en funció de les variables 'Education' i 
 
 ```{r message= FALSE, warning=FALSE}
 #Agrupació per estudis:
-
 data_clients.basic <- data_clients[data_clients$Education == "Basic",]
 data_clients.graduation <- data_clients[data_clients$Education == "Graduation",]
 data_clients.cycle <- data_clients[data_clients$Education == "2n Cycle",]
 data_clients.master <- data_clients[data_clients$Education == "Master",]
 data_clients.phd <- data_clients[data_clients$Education == "PhD",]
-
 #Agrupació per estat civil:
 data_clients.divorced <- data_clients[data_clients$Marital_Status == "Divorced",]
 data_clients.married <- data_clients[data_clients$Marital_Status == "Married",]
 data_clients.single <- data_clients[data_clients$Marital_Status == "Single" || data_clients$Education == "Alone",]
 data_clients.together <- data_clients[data_clients$Marital_Status == "Together",]
 data_clients.widow <- data_clients[data_clients$Marital_Status == "Widow",]
-
 ```
 
 
@@ -320,11 +311,8 @@ Les variables amb les que es mesurarà la normalitat són les del tipus numèric
 ```{r message= FALSE, warning=FALSE}
 options(scipen = 100)
 par(mfrow=c(3,4))
-
 p_value <- 0.05
-
 columnes <- colnames(data_clients)
-
 colnames_not_check <- c("ID", "Kidhome", "Teenhome")
 
 for (i in 1:ncol(data_clients)) {
@@ -332,9 +320,7 @@ for (i in 1:ncol(data_clients)) {
   if(is.numeric(col) && !is.element(colnames(data_clients)[i], colnames_not_check)){
     qqnorm(col, main = paste("Normal Q-Q plot: ", colnames(data_clients)[i]));
     qqline(col, col = 2)
-    
     normality_pvalue <- shapiro.test(col)$p.value
-    
     if(normality_pvalue < p_value){
       cat("Distribució NO normalitzada de la columna: ", colnames(data_clients)[i])
     }else{
@@ -355,7 +341,6 @@ En aquest cas s'aplica la transformació Box-Cox de la llibreria forecast:
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if (!require('forecast')) install.packages('forecast'); library('forecast')
 if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
-
 data_clients_normalitzat <- data_clients
 data_clients_normalitzat$MntFruits <- BoxCox(data_clients[,c('MntFruits')], 1/2)
 data_clients_normalitzat$MntMeatProducts <- BoxCox(data_clients[,c('MntMeatProducts')], 1/2)
@@ -380,7 +365,6 @@ fligner.test(Year_Birth ~ MntSweetProducts, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumWebPurchases, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumCatalogPurchases, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumStorePurchases, data = data_clients_normalitzat)
-
 ```
 
 Les variables següents són homogènies ja que el p-value és superior a 0.05: Year_Birth by MntFishProducts, Year_Birth by NumWebPurchases.
@@ -403,8 +387,7 @@ Procedim a realitzar un anàlisis de correlació amb les diferents variables i a
 - MntFishProducts
 - MntSweetProducts
 
-
-Per fer l'estudi ytilitzarem les dades normalitzades (data_clients_normalitzat):
+Per fer l'estudi utilitzarem les dades normalitzades (data_clients_normalitzat):
 
 ##### MntFruits
 
@@ -419,7 +402,6 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
     method = "spearman")
     corr_coef = spearman_test$estimate
     p_val = spearman_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = corr_coef
     pair[2][1] = p_val
@@ -433,8 +415,6 @@ print(corr_matrix)
 Les variables amb més correlació amb la quantitat de fruita comprada són els que estan més a prop dels valors -1 i 1. 
 
 En aquest cas les variables amb una correlació més alta són MntMeatProducts i MntSweetProducts però en cap cas amb un valor prou rellevant.
-
-
 
 ##### MntMeatProducts
 
@@ -450,7 +430,6 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
     method = "spearman")
     corr_coef = spearman_test$estimate
     p_val = spearman_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = corr_coef
     pair[2][1] = p_val
@@ -459,14 +438,10 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
   }
 }
 print(corr_matrix)
-
 ```
 
-
 Les variables amb més correlació amb la quantitat de carn comprada són els que estan més a prop dels valors -1 i 1. 
-
 En aquest cas la variable amb una correlació més alta és NumCatalogPurchases i Income per tant podem concloure que l'ingrés familiar i el número de compres realitzades per catàleg pot està relacionat amb les compres de carn d'un client.
-
 
 ##### MntFishProducts 
 
@@ -482,7 +457,6 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
     method = "spearman")
     corr_coef = spearman_test$estimate
     p_val = spearman_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = corr_coef
     pair[2][1] = p_val
@@ -491,14 +465,8 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
   }
 }
 print(corr_matrix)
-
 ```
-
-
-Les variables amb més correlació amb la quantitat de peix comprada són els que estan més a prop dels valors -1 i 1. 
-
 En aquest cas les variables amb una correlació més alta són MntSweetProducts , MntMeatProducts i MntFruits , però en cap cas prou rellevant.
-
 
 ##### MntSweetProducts 
 
@@ -514,7 +482,6 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
     method = "spearman")
     corr_coef = spearman_test$estimate
     p_val = spearman_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = corr_coef
     pair[2][1] = p_val
@@ -523,11 +490,7 @@ for (i in 1:(ncol(data_clients_normalitzat) - 1)) {
   }
 }
 print(corr_matrix)
-
 ```
-
-Les variales amb més correlació amb la quantitat de dolços comprada són els que estan més a prop dels valors -1 i 1. 
-
 En aquest cas les variables amb una correlació més alta són MntMeatProducts i MntFruits , però en cap cas prou rellevant.
 
 La conclusió que podem extreure en aquest cas és que els ingressos i l'ús del catàleg com a forma de comprar pot està relacionat amb els clients que compren Carn. Hauríem de fer un anàlisi més extens per poder veure com.
@@ -551,7 +514,6 @@ for (i in 1:(ncol(data_clients) - 1)) {
     kruskal_test = kruskal.test(MntFruits ~ data_clients[,i] , data = data_clients)
     statistic = kruskal_test$statistic
     p_val = kruskal_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = statistic
     pair[2][1] = p_val
@@ -560,11 +522,9 @@ for (i in 1:(ncol(data_clients) - 1)) {
   }
 }
 print(cont_matrix)
-
-
 ```
-En aquest cas no tots els valors són inferior a 0,05. 
-La variable ID no té rellevància com a dada informativa.
+
+En aquest cas tots els valors són inferior a 0,05. La variable ID no té rellevància com a dada informativa.
 
 ##### MntMeatProducts    
 
@@ -578,7 +538,6 @@ for (i in 1:(ncol(data_clients) - 1)) {
     kruskal_test = kruskal.test(MntMeatProducts ~ data_clients[,i] , data = data_clients)
     statistic = kruskal_test$statistic
     p_val = kruskal_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = statistic
     pair[2][1] = p_val
@@ -587,10 +546,10 @@ for (i in 1:(ncol(data_clients) - 1)) {
   }
 }
 print(cont_matrix)
-
 ```
 
-En aquest cas numCatalogPurchases té un valor superior a 0,05. Un resultat coherent amb el resultat que ens ha donat anteriorment revisant la correlació de les variables.
+En aquest cas numCatalogPurchases té un valor superior a 0,05. 
+Un resultat coherent amb el resultat que ens ha donat anteriorment revisant la correlació de les variables.
 
 ##### MntFishProducts    
 
@@ -603,7 +562,6 @@ for (i in 1:(ncol(data_clients) - 1)) {
     kruskal_test = kruskal.test(MntFishProducts ~ data_clients[,i] , data = data_clients)
     statistic = kruskal_test$statistic
     p_val = kruskal_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = statistic
     pair[2][1] = p_val
@@ -612,11 +570,8 @@ for (i in 1:(ncol(data_clients) - 1)) {
   }
 }
 print(cont_matrix)
-
 ```
-
-En aquest cas no tots els valors són inferior a 0,05. 
-La variable ID no té rellevància com a dada informativa.
+En aquest cas tots els valors són inferior a 0,05.  La variable ID no té rellevància com a dada informativa.
 
 ##### MntSweetProducts    
 
@@ -629,7 +584,6 @@ for (i in 1:(ncol(data_clients) - 1)) {
     kruskal_test = kruskal.test(MntSweetProducts ~ data_clients[,i] , data = data_clients)
     statistic = kruskal_test$statistic
     p_val = kruskal_test$p.value
-    # Add row to matrix
     pair = matrix(ncol = 2, nrow = 1)
     pair[1][1] = statistic
     pair[2][1] = p_val
@@ -639,39 +593,27 @@ for (i in 1:(ncol(data_clients) - 1)) {
 }
 print(cont_matrix)
 
-
 ```
 
-En aquest cas no tots els valors són inferior a 0,05. 
-La variable ID no té rellevància com a dada informativa.
-
+En aquest cas tots els valors són inferior a 0,05. La variable ID no té rellevància com a dada informativa.
 
 Fem també una prova de t-test per les dades preparades anteriorment, segons als estudis del client.
-
-Per molt que no siguin normals, en els casos que tenim una mida prou gran, podem utilitzar la prova. 
+Per molt que no siguin normals, en els casos que tenim tenen una mida prou gran, per tant, podem utilitzar la prova. 
 
 Revisem el test entre els diferents grups d'estudis i estat civil per veure si hi ha alguna relació:
-
-
-
-
 Revisem el número d'observacions per dataset:
 
-
 ```{r message= FALSE, warning=FALSE}
-
 print(paste("Número de Registres clients.basic: ", nrow(data_clients.basic)))
 print(paste("Número de Registres clients.graduation: ",nrow(data_clients.graduation)))
 print(paste("Número de Registres clients.cycle: ",nrow(data_clients.cycle)))
 print(paste("Número de Registres clients.master: ",nrow(data_clients.master)))
 print(paste("Número de Registres clients.phd: ",nrow(data_clients.phd)))
-
 print(paste("Número de Registres clients.divorced: ",nrow(data_clients.divorced)))
 print(paste("Número de Registres clients.married: ",nrow(data_clients.married)))
 print(paste("Número de Registres clients.single: ",nrow(data_clients.single)))
 print(paste("Número de Registres clients.together: ",nrow(data_clients.together)))
 print(paste("Número de Registres clients.widow: ",nrow(data_clients.widow)))
-
 ```
 
 En el nostre cas, totes les mostres són majors de 30 registres per tant podem utilitzar l'anàlisi de contrast de t-student amb aquests conjunts de dades:
@@ -680,10 +622,10 @@ Fem un estudi respecte el que es gasta en fruita els diferents subconjunts que a
 
 
 ```{r message= FALSE, warning=FALSE}
-print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs married:",t.test(data_clients.basic$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs single:",t.test(data_clients.basic$MntFruits, data_clients.single$MntFruits,alternative = "less")$p.value))
-print(paste("t-students basic vs together:",t.test(data_clients.basic$MntFruits, data_clients.together$MntFruits,alternative = "less")$p.value))
+print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntFruits, data_clients.divorced$MntFruits,alternative="less")$p.value))
+print(paste("t-students basic vs married:",t.test(data_clients.basic$MntFruits, data_clients.married$MntFruits,alternative="less")$p.value))
+print(paste("t-students basic vs single:",t.test(data_clients.basic$MntFruits, data_clients.single$MntFruits,alternative="less")$p.value))
+print(paste("t-students basic vs together:",t.test(data_clients.basic$MntFruits, data_clients.together$MntFruits,alternative="less")$p.value))
 print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntFruits, data_clients.widow$MntFruits,alternative = "less")$p.value))
 print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntFruits, data_clients.divorced$MntFruits,alternative = "less")$p.value))
 print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntFruits, data_clients.married$MntFruits,alternative = "less")$p.value))
@@ -808,8 +750,6 @@ print(paste("t-students phd vs together:",t.test(data_clients.phd$MntSweetProduc
 print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntSweetProducts, data_clients.widow$MntSweetProducts,alternative = "less")$p.value))
 
 ```
-
-
 #### Anàlisi de regressió:
 
 Per obtenir un model de regressió lineal eficient ho farem a partir de les variables amb més correlació que haguem trobat de les variables en estudi.
@@ -835,11 +775,9 @@ tabla.quoficients <- matrix(c(
 3, summary(model3)$r.squared,
 4, summary(model4)$r.squared,
 5, summary(model5)$r.squared),
-
 ncol = 2, byrow = TRUE)
 colnames(tabla.quoficients) <- c("Model", "R^2")
 tabla.quoficients
-
 ```
 
 En aquest cas veiem que tots tenen una coeficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
@@ -947,7 +885,6 @@ Finalment, amb la representació dels resultats es conclou el següent:
 - Els clients més habituals són els nascuts entre 1970 i 1975, però el gasto per a cada producte és baix. 
 - Hi ha una relació directa entre els ingressos mensuals i el gasto fet en les compres dels productes. Tot i així, és important saber que la majoria dels clients tenen un ingrés de 35,000 dollars anuals. I el gasto de productes augmenta a partir dels 45,000 i 50,000 dollars.
 - Pel que fa als estudis, els clients més habituals són els graduats, a excepció dels nascuts abans del 1950 que tenen un PhD.
-
 
 
 Contribucions                   Signatura
