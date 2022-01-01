@@ -64,8 +64,8 @@ Els atributs que conté el dataset són els següents:
 - **Z_Revenue**: Ingressos del client: Té valor 11 per defecte.	
 - **Response**: 1 si el client va acceptar l’oferta en la última campanya, 0 en cas contrari.
 
-A partir del conjunt de dades d’aquest dataset, es pretén estudiar com influeix el perfil del client amb la quantitat gastada en les compres de productes d’aliments. Per això, s’aplicaran mètodes de regressió per a veure la relació entre les diferents variables, i mètodes de classificació per a crear el perfil del client.
-Aquest estudi és important per a les empreses de ventes de productes (tan online com físiques) per a poder identificar el tipus de client que compra cada producte i crear així campanyes de màrqueting específiques.
+A partir del conjunt de dades d’aquest dataset, es pretén estudiar com influeix el perfil del client amb la quantitat gastada en les compres de productes de carn. Per això, s’aplicaran mètodes de regressió per a veure la relació entre les diferents variables, i mètodes de classificació per a crear el perfil del client.
+Aquest estudi és important per a les empreses de ventes de productes (tan online com físiques) per a poder identificar el tipus de client que compra de carn i crear així campanyes de màrqueting específiques.
 
 *****
 # Integració i selecció de les dades d'interès a analitzar
@@ -85,13 +85,12 @@ D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
 - Year_Birth, Education, Marital_status, Income, Kidhome, Teenhome, Dt_Customer
 
   **Gasto per productes alimentaris**:
-- MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases.
+- MntMeatProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases.
 
 La resta de variables, degut a que no es faran servir, s'eliminen del conjunt de dades:
 
 ```{r message= FALSE, warning=FALSE}
-data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome',  'Dt_Customer', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts',
-'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
+data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome', 'MntMeatProducts', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
 ```
 
 *****
@@ -104,9 +103,9 @@ Abans de començar amb la neteja de dades, cal mirar el tipus de dades que R ha 
 summary(data_clients)
 ```
 
-Es pot observar que les variables 'Education', 'Marital Status' i 'Dt Customer' són les úniques expressades com a text. La resta de variables són numèriques.
+Es pot observar que les variables 'Education' i 'Marital Status' són les úniques expressades com a text. La resta de variables són numèriques.
 
-Primer, es validarà que les variables de text 'Education' i 'Marital Status' es poden categoritzar:
+Primer, es validarà que aquestes variables de text es puguin categoritzar:
 
 ```{r message= FALSE, warning=FALSE}
 table(data_clients$Education)
@@ -156,12 +155,8 @@ que es puguin considerar incorrectes o que ens pugui implicar una desviació imp
 Es visualitzen la gràfica boxPlot d'algunes de les variables, i posteriorment es fa l'anàlisi de cadascuna d'elles:
 
 ```{r message= FALSE, warning=FALSE}
-par(mfrow=c(2,3))
+par(mfrow=c(1,2))
 
-extrems_dt_customer <- boxplot(as.numeric(substring(data_clients$Dt_Customer,7,10)), main="DT_CUSTOMER")
-extrems_mntFruits <- boxplot(data_clients$MntFruits, main="MntFruits")
-extrems_mntFish <- boxplot(data_clients$MntFishProducts, main="MntFishProducts")
-extrems_mntSweet <- boxplot(data_clients$MntSweetProducts, main = "MntSweetProducts")
 extrems_mntMeat <- boxplot(data_clients$MntMeatProducts, main = "MntMeatProducts")
 extrems_income <- boxplot(data_clients$Income, main = "Income")
 ```
@@ -201,15 +196,6 @@ table(data_clients$NumStorePurchases)
 
 ```
 
-VARIABLE **DT_CUSTOMER**:  
-```{r message= FALSE, warning=FALSE}
-# Revisem els anys de les dates de clients.
-
-table(as.numeric(substring(data_clients$Dt_Customer,7,10)))
-
-## Tant la seva representació en boxplot com en taula és correcta.
-```
-
 VARIABLE **NUMWEBPURCHASES**: 
 
 ```{r message= FALSE, warning=FALSE}
@@ -226,34 +212,7 @@ summary(data_clients$NumCatalogPurchases)
 
 ## Els valors extrems són valors que es poden donar. Els donem per bons.
 ```
-VARIABLE **MNTFRUITS**:
 
-```{r message= FALSE, warning=FALSE}
-## Al tenir tants valors diferents, representem el seu boxplot:
-
-summary(data_clients$MntFruits)
-
-## Veiem que hi han valors que estan fora de l’esperat però no estan allunyats entre ells. A més, són valors possibles.
-## Ho donem per bo.
-```
-VARIABLE **MNTFISHPRODUCTS**:
-
-```{r message= FALSE, warning=FALSE}
- 
-## Al tenir tants valors diferents, representem el seu boxplot
-summary(data_clients$MntFishProducts)
-## Veiem que hi han valors que estan fora de l’esperat però no estan allunyats entre ells. A més, són valors possibles.
-## Ho donem per bo.
-```
-VARIABLE **MNTSWEETPRODUCTS**:
-
-```{r message= FALSE, warning=FALSE}
-summary(data_clients$MntSweetProducts)
-
-## Veiem que hi han un valor que estan molt fora de ho esperat.
-## Al ser només un el canviem per la mitjana.
-data_clients$MntSweetProducts[(data_clients$MntSweetProducts==262)] <- median(data_clients$MntSweetProducts)
-```
 VARIABLE **MNTMEATPRODUCTS**;
 ```{r message= FALSE, warning=FALSE}
 ## Al tenir tants valors diferents, representem el seu boxplot
@@ -310,7 +269,7 @@ Les variables amb les que es mesurarà la normalitat són les del tipus numèric
 
 ```{r message= FALSE, warning=FALSE}
 options(scipen = 100)
-par(mfrow=c(3,4))
+par(mfrow=c(3,3))
 p_value <- 0.05
 columnes <- colnames(data_clients)
 colnames_not_check <- c("ID", "Kidhome", "Teenhome")
@@ -334,7 +293,7 @@ for (i in 1:ncol(data_clients)) {
 
 Es pot observar en el diagrama Q-Q i fent el test Shapiro-Wilk, que cap de les variables està normalitzada.
 
-Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases. 
+Es proposa normalitzar les variables següents, ja que la resta, es bo que es vegin els valors reals: MntMeatProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases. 
 En aquest cas s'aplica la transformació Box-Cox de la llibreria forecast:
 
 ```{r message= FALSE, warning=FALSE}
@@ -342,10 +301,7 @@ if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 if (!require('forecast')) install.packages('forecast'); library('forecast')
 if (!require('gridExtra')) install.packages('gridExtra'); library('gridExtra')
 data_clients_normalitzat <- data_clients
-data_clients_normalitzat$MntFruits <- BoxCox(data_clients[,c('MntFruits')], 1/2)
 data_clients_normalitzat$MntMeatProducts <- BoxCox(data_clients[,c('MntMeatProducts')], 1/2)
-data_clients_normalitzat$MntFishProducts <- BoxCox(data_clients[,c('MntFishProducts')], 1/2)
-data_clients_normalitzat$MntSweetProducts <- BoxCox(data_clients[,c('MntSweetProducts')], 1/2)
 data_clients_normalitzat$NumWebPurchases <- BoxCox(data_clients[,c('NumWebPurchases')], 1/2)
 data_clients_normalitzat$NumCatalogPurchases <- BoxCox(data_clients[,c('NumCatalogPurchases')], 1/2)
 data_clients_normalitzat$NumStorePurchases <- BoxCox(data_clients[,c('NumStorePurchases')], 1/2)
@@ -358,16 +314,13 @@ Tal i com passava amb el test Shapiro-Wilk, si el p-value és inferior a 0.05, e
 
 ```{r message= FALSE, warning=FALSE}
 
-fligner.test(Year_Birth ~ MntFruits, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ MntMeatProducts, data = data_clients_normalitzat)
-fligner.test(Year_Birth ~ MntFishProducts, data = data_clients_normalitzat)
-fligner.test(Year_Birth ~ MntSweetProducts, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumWebPurchases, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumCatalogPurchases, data = data_clients_normalitzat)
 fligner.test(Year_Birth ~ NumStorePurchases, data = data_clients_normalitzat)
 ```
 
-Les variables següents són homogènies ja que el p-value és superior a 0.05: Year_Birth by MntFishProducts, Year_Birth by NumWebPurchases.
+Les variables següents són homogènies ja que el p-value és superior a 0.05: Year_Birth by NumWebPurchases.
 La resta no ho són.
 
 
@@ -788,35 +741,24 @@ En aquest cas veiem que tots tenen una coeficient de determinació baix, per tan
 
 Les taules gràfiques han d'ajudar a representat els resultats mostrats anteriorment.
 
-Primerament, es comprova que les compres realitzades a la fruita i la carn en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
+Primerament, es comprova que les compres realitzades la carn i fetes des del catàleg en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
 
 ```{r message= FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library(ggplot2)
 
-ggplot(data_clients_normalitzat, aes(x=MntFruits, y=MntMeatProducts, color=Education)) + 
+ggplot(data_clients_normalitzat, aes(x=NumStorePurchases, y=MntMeatProducts, color=Education)) + 
     geom_point(size=6) 
 ```
 
-Es pot observar que hi ha una gran diferència de les persones amb estudis bàsics, que gasten menys diners en la compra de fruita i de carn. Tot i així, les persones amb la resta d'estudis, compren per sobre de la mitjana.
+Es pot observar que hi ha una gran diferència de les persones amb estudis bàsics, que gasten menys diners en la compra de carn. Tot i així, les persones amb la resta d'estudis, compren per sobre de la mitjana.
 
 
-Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat amb les variables en referència a la compra de fruita, carn, peix i dolços:
+Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat amb les variables en referència a la compra de fruita:
 
 ```{r message= FALSE, warning=FALSE}
 
-plotMeat <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntMeatProducts) ) +
+ggplot(data_clients, aes(x=Year_Birth, y=MntMeatProducts) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
-
-plotFruits <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntFruits) ) +
-  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
-
-plotFish <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntFishProducts) ) +
-  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
-
-plotSweet <- ggplot(data_clients_normalitzat, aes(x=Year_Birth, y=MntSweetProducts) ) +
-  stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
-
-grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
 
 ```
 
@@ -831,13 +773,13 @@ data_clients["segment_edat"] <- cut(data_clients$Year_Birth, breaks = c(0, 1950,
 plotMeat <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntMeatProducts)) + 
     geom_bar(position="fill", stat="identity")
 
-plotFish <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntFishProducts)) + 
+plotFish <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumStorePurchases)) + 
     geom_bar(position="fill", stat="identity")
 
-plotFruits <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntFruits)) + 
+plotFruits <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumCatalogPurchases)) + 
     geom_bar(position="fill", stat="identity")
 
-plotSweet <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntSweetProducts)) + 
+plotSweet <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumWebPurchases)) + 
     geom_bar(position="fill", stat="identity")
 
 grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
@@ -851,13 +793,13 @@ Finalment, es comprova les compres realitzades segons els diners gastats en les 
 plotMeat <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntMeatProducts) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotFruits <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntFruits) ) +
+plotFruits <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumWebPurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotFish <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntFishProducts) ) +
+plotFish <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumCatalogPurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotSweet <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntSweetProducts) ) +
+plotSweet <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumStorePurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
 grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
@@ -871,18 +813,13 @@ grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
 A partir dels resultats obtinguts, quines són les conclusions?
 Els resultats permeten respondre al problema?
 
-L’objectiu d’aquest estudi és identificar el tipus de client que compra cada producte i crear així campanyes de màrqueting específiques.
-
-Abans de començar amb l’anàlisi de les dades, s’han seleccionat aquelles variables que aporten més a la resolució del problema plantejar (són variables relacionades amb el perfil del client i el gasto total segons el tipus de producte).
-
-Posteriorment, s’han eliminat  els elements buits de la variable ‘Income’, ja que era l’única, la resta tenien els valors informats. I s’han tractat els valors extrems de ‘Year_Birth’, ‘MntSweetProducts’, ‘MntMeatProducts’ i ‘Income’.
-
-Un cop les dades estaves ja preparades, s’ha iniciat l’anàlisi estadístic. Primerament, s’ha aplicat un anàlisi de correlació per identificar les dependències entre les variables. Es comprova que hi ha una dependència entre les compres dels diferents productes carn, dolços, peix i fruita. I més concretament, entre els productes de carn, l’ingrés familiar i el número de compres realitzada. Després, es fa un anàlisi de contrast d’hipòtesi que permet comparar les mitjanes entre els diferents grups. Aquí hem pogut observar que l’estat marital és més rellevant en les compres que no pas els estudis.
+L’objectiu d’aquest estudi és identificar el tipus de client que compra de carn i crear així campanyes de màrqueting específiques.
+Per això, s'han seleccionat les variables adients per a resoldre el problema i s'han netejar i tractat per a poder analitzar les dades i representar-les
 
 Finalment, amb la representació dels resultats es conclou el següent:
 
 - Els aspectes que més influeixen en la compra són els ingressos anuals i l’edat del client. L’educació ens indica que els clients amb estudis bàsics, compren menys, però això es degut a que tenen feines menys qualificades i amb menys ingressos.
-- Els clients més habituals són els nascuts entre 1970 i 1975, però el gasto per a cada producte és baix. 
+- Els clients més habituals són els nascuts entre 1970 i 1975, però el gasto per al producte és baix. 
 - Hi ha una relació directa entre els ingressos mensuals i el gasto fet en les compres dels productes. Tot i així, és important saber que la majoria dels clients tenen un ingrés de 35,000 dollars anuals. I el gasto de productes augmenta a partir dels 45,000 i 50,000 dollars.
 - Pel que fa als estudis, els clients més habituals són els graduats, a excepció dels nascuts abans del 1950 que tenen un PhD.
 
