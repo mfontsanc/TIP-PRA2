@@ -341,14 +341,12 @@ print(corr_matrix)
 Les variables amb més correlació amb la quantitat de carn comprada són els que estan més a prop dels valors -1 i 1. 
 En aquest cas la variable amb una correlació més alta és NumCatalogPurchases i Income per tant podem concloure que l'ingrés familiar i el número de compres realitzades per catàleg pot està relacionat amb les compres de carn d'un client.
 
-La conclusió que podem extreure en aquest cas és que els ingressos i l'ús del catàleg com a forma de comprar pot està relacionat amb els clients que compren Carn. Hauríem de fer un anàlisi més extens per poder veure com.
-
 #### Anàlisi de contrast:
 
 Mirem ara de fer una prova de contrast d'hipòtesi:
 
 Com que quasi totes les relacions entre les variables del dataset original no són homogènies, utilitzarem el tests de kruskal entre els diferents variables i les variables d’estudi, revisant quin valor de p-value dona.
-Si és menor a 0,05 conclourem que els valors de la variable d’estudi és variant segons els diferents valors de l’altra variable.
+Si és menor a 0,05 conclourem que els valors de la variable d’estudi, MntMeatProducts, és variant segons els diferents valors de l’altra variable.
 
 ##### Test de Kruskal
 
@@ -390,9 +388,7 @@ print(paste("Número de Registres clients.single: ",nrow(data_clients.single)))
 print(paste("Número de Registres clients.together: ",nrow(data_clients.together)))
 print(paste("Número de Registres clients.widow: ",nrow(data_clients.widow)))
 ```
-
-En el nostre cas, totes les mostres són majors de 30 registres per tant podem utilitzar l'anàlisi de contrast de t-student amb aquests conjunts de dades:
-
+Totes les mostres són majors de 30 registres per tant podem utilitzar l'anàlisi de contrast de t-student amb aquests conjunts de dades:
 Fem un estudi respecte el que es gasta en carn els diferents subconjunts que anteriorment hem calculat:
 
 ##### T-student
@@ -422,14 +418,14 @@ print(paste("t-students phd vs married:",t.test(data_clients.phd$MntMeatProducts
 print(paste("t-students phd vs single:",t.test(data_clients.phd$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students phd vs together:",t.test(data_clients.phd$MntMeatProducts, data_clients.together$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
-
 ```
+La conclusió que podem arribar és uqe en els casos d'estudis superiors té un valor superior a 0,05 independentmnet del seu estat civil.
 
 #### Anàlisi de regressió:
 
-Per obtenir un model de regressió lineal eficient ho farem a partir de les variables amb més correlació que haguem trobat de les variables en estudi.
+Per obtenir un model de regressió lineal eficient ho farem a partir de les variables amb més correlació que haguem trobat en la variable d'estudi.
 
-En aquest cas, i segons els estudis anteriors, ens centrarem amb la variable MntMeatProducts i Income, NumCatalogPurchase, NumStorePurchases i NumWebPurchases.
+Per tant ens centrarem amb les variables Income, NumCatalogPurchase, NumStorePurchases i NumWebPurchases.
 
 ```{r message= FALSE, warning=FALSE}
 
@@ -450,7 +446,7 @@ colnames(tabla.quoficients) <- c("Model", "R^2")
 tabla.quoficients
 ```
 
-En aquest cas veiem que tots tenen una coeficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
+Veiem que tots tenen una coeficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
 
 ## Representació dels resultats a partir de taules gràfiques
 
