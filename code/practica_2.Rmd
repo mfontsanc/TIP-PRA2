@@ -4,22 +4,24 @@ author: "Autor: Isabel Barrera Benavent i Maria Font Sánchez"
 date: "Desembre 2021"
 output:
   word_document: default
-  pdf_document:
-    highlight: zenburn
-    toc: yes
   html_document:
     highlight: default
     number_sections: yes
     theme: cosmo
     toc: yes
     toc_depth: 2
+  pdf_document:
+    highlight: zenburn
+    toc: yes
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval=T, echo=T, fig.width=12, fig.height=8)
+knitr::opts_chunk$set(eval=T, echo=T, fig.width=12, fig.height=6)
 ```
-*****
-# Descripció del dataset. Perquè és important i quina pregunta/problema pretén respondre?
-*****
+
+# Descripció del dataset. 
+
+**Perquè és important i quina pregunta/problema pretén respondre?**
+
 El dataset que hem decidit fer servir per aquesta pràctica és el següent: 
 
 https://www.kaggle.com/imakash3011/customer-personality-analysis
@@ -35,41 +37,39 @@ D’aquesta manera l’empresa pot prendre decisions respecte als productes que 
 Els atributs que conté el dataset són els següents: 
 
 - **ID**:   Identificador únic del client.
-- **Year_Birth***: Any de naixement del client.
+- **Year_Birth**: Any de naixement del client.
 - **Education**: Nivell d’educació del client.
 - **Marital_Status**: Estat marital del client. 
 - **Income**: Ingrés familiar del client.
-- **Kidhome**: Número de fills amb qui viu el client.	
-- **Teenhome**: Número d’adolescents amb qui viu el client.		
-- **Dt_Customer**: Data en que s’inscriu com client de l’empresa.	
-- **Recency**: Número de dies que han passat des de l’última compra del client.
-- **MntWines**: Quantitat gastada en vi durant els últims dos anys per el client.
-- **MntFruits**: Quantitat gastada en vi durant els últims dos anys per el client.	
-- **MntMeatProducts**: Quantitat gastada en carn durant els últims dos anys per el client.
-- **MntFishProducts**: Quantitat gastada en peix durant els últims dos anys per el client.
-- **MntSweetProducts**: Quantitat gastada en dolços durant els últims dos anys per el client.
-- **MntGoldProds**: Quantitat gastada en or durant els últims dos anys per el client.
-- **NumDealsPurchases**: Número de compres realitzades amb descomptes per el client. 
-- **NumWebPurchases**: Número de compres realitzades des de la web de l’empresa per el  client.
-- **NumCatalogPurchases**: Número de compres realitzades des del catàleg de l’empresa per el client.
-- **NumStorePurchases**: Número de compres realitzades directament en una tenda de l’empresa per el client.
-- **NumWebVisitsMonth**: Número de  visites realitzades durant l’últim mes a la web de l’empresa del client.
-- **AcceptedCmp3**: 1 si el client va acceptar l’oferta en la tercera campanya, 0 en cas contrari
-- **AcceptedCmp4**: 1 si el client va acceptar l’oferta en la quarta campanya, 0 en cas contrari.
-- **AcceptedCmp5**: 1 si el client va acceptar l’oferta en la cinquena campanya, 0 en cas contrari.
-- **AcceptedCmp1**: 1 si el client va acceptar l’oferta en la primera campanya, 0 en cas contrari.
-- **AcceptedCmp2**: 1 si el client va acceptar l’oferta en la segons campanya, 0 en cas contrari.
-- **Complain**: 1 si hi ha hagut alguna queixa del client en els últims dos anys. 0 en cas contrari.
+- **Kidhome**: Número de fills amb qui viu el client.
+- **Teenhome**: Número d’adolescents amb qui viu el client.
+- **Dt_Customer**: Data en que s’inscriu com client de l’empresa.
+- **Recency**: Número de dies que han passat des de l’última compra.
+- **MntWines**: Quantitat gastada en vi durant els últims dos anys.
+- **MntFruits**: Quantitat gastada en vi durant els últims dos anys.
+- **MntMeatProducts**: Quantitat gastada en carn durant els últims dos anys.
+- **MntFishProducts**: Quantitat gastada en peix durant els últims dos anys.
+- **MntSweetProducts**: Quantitat gastada en dolços durant els últims dos anys.
+- **MntGoldProds**: Quantitat gastada en or durant els últims dos anys.
+- **NumDealsPurchases**: Número de compres realitzades amb descomptes. 
+- **NumWebPurchases**: Número de compres realitzades des de la web de l’empresa.
+- **NumCatalogPurchases**: Número de compres realitzades des del catàleg de l’empresa.
+- **NumStorePurchases**: Número de compres realitzades directament en una tenda de l’empresa.
+- **NumWebVisitsMonth**: Número de  visites realitzades durant l’últim mes a la web de l’empresa.
+- **AcceptedCmp3**: el client va acceptar l’oferta en la 3a campanya (1),  o no (0).
+- **AcceptedCmp4**: el client va acceptar l’oferta en la 4a campanya (1),  o no (0).
+- **AcceptedCmp5**: el client va acceptar l’oferta en la 5a campanya (1),  o no (0).
+- **AcceptedCmp1**: el client va acceptar l’oferta en la 1a campanya (1),  o no (0).
+- **AcceptedCmp2**: el client va acceptar l’oferta en la 2a campanya (1),  o no (0).
+- **Complain**: si hi ha hagut alguna queixa del client en els últims dos anys (1), o no (0).
 - **Z_CostContact**: Cost Contacte. Té valor 3 per defecte.
 - **Z_Revenue**: Ingressos del client: Té valor 11 per defecte.	
-- **Response**: 1 si el client va acceptar l’oferta en la última campanya, 0 en cas contrari.
+- **Response**: 1si el client va acceptar l’oferta en la última campanya (1), o no (0).
 
 A partir del conjunt de dades d’aquest dataset, es pretén estudiar com influeix el perfil del client amb la quantitat gastada en les compres de productes de carn. Per això, s’aplicaran mètodes de regressió per a veure la relació entre les diferents variables, i mètodes de classificació per a crear el perfil del client.
 Aquest estudi és important per a les empreses de ventes de productes (tan online com físiques) per a poder identificar el tipus de client que compra de carn i crear així campanyes de màrqueting específiques.
 
-*****
 # Integració i selecció de les dades d'interès a analitzar
-*****
 
 Per tal de poder realitzar la selecció de les dades d'interès a analitzar, el primer pas és fer la lectura del fitxer CSV anomenat 'marketing_campaign.csv':
 
@@ -82,7 +82,7 @@ D'aquestes 29 variables, ens interessa quedar-nos amb les següents:
 - ID: identificador únic
 
   **Perfil del client**:
-- Year_Birth, Education, Marital_status, Income, Kidhome, Teenhome, Dt_Customer
+- Year_Birth, Education, Marital_status, Income, Kidhome, Teenhome.
 
   **Gasto per productes alimentaris**:
 - MntMeatProducts, NumWebPurchases, NumCatalogPurchases, NumStorePurchases.
@@ -93,17 +93,9 @@ La resta de variables, degut a que no es faran servir, s'eliminen del conjunt de
 data_clients <- data_clients[, c('ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Kidhome', 'Teenhome', 'MntMeatProducts', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')]
 ```
 
-*****
 # Neteja de dades
-*****
 
-Abans de començar amb la neteja de dades, cal mirar el tipus de dades que R ha assignat a cada columna, i també amb la funció 'summary' es pot veure els valors màxims, mínims i les mitjanes de les variables numèriques.
-
-```{r message= FALSE, warning=FALSE}
-summary(data_clients)
-```
-
-Es pot observar que les variables 'Education' i 'Marital Status' són les úniques expressades com a text. La resta de variables són numèriques.
+En les dades del dataset, es pot observar que les variables 'Education' i 'Marital Status' són les úniques expressades com a text. La resta de variables són numèriques.
 
 Primer, es validarà que aquestes variables de text es puguin categoritzar:
 
@@ -119,9 +111,7 @@ data_clients$Education <- as.factor(data_clients$Education)
 data_clients$Marital_Status <- as.factor(data_clients$Marital_Status)
 ```
 
-*****
 ## Zeros o elements buits
-*****
 
 **Les dades contenen zeros o elements buits? Com gestionaries aquests casos?**
 
@@ -143,9 +133,7 @@ Degut a que es tracta d'1% dels registres totals, es preferible eliminar-los ja 
 data_clients <- na.omit(data_clients)
 ```
 
-*****
 ## Identificació i tractament de valors extrems
-*****
 
 El següent pas és identificar els valors extrems, que són les dades que es troben allunyades de la distribució normal.
 
@@ -234,9 +222,7 @@ table(data_clients$Income[(data_clients$Income>300000)] )
 data_clients$Income[(data_clients$Income>300000)] <- median(data_clients$Income)
 ```
 
-*****
 ## Anàlisi de les dades
-*****
 
 ### Selecció dels grups de dades que es volen analitzar/comparar (planificació dels anàlisis a aplicar)
 
@@ -269,7 +255,7 @@ Les variables amb les que es mesurarà la normalitat són les del tipus numèric
 
 ```{r message= FALSE, warning=FALSE}
 options(scipen = 100)
-par(mfrow=c(3,3))
+par(mfrow=c(2,3))
 p_value <- 0.05
 columnes <- colnames(data_clients)
 colnames_not_check <- c("ID", "Kidhome", "Teenhome")
@@ -320,9 +306,7 @@ fligner.test(Year_Birth ~ NumStorePurchases, data = data_clients_normalitzat)
 Les variables següents són homogènies ja que el p-value és superior a 0.05: Year_Birth by NumWebPurchases.
 La resta no ho són.
 
-*****
 ### Aplicació de proves estadístiques per comparar els grups de dades
-*****
 
 En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast d'hipòtesis, correlacions, regressions etc.
 
@@ -331,8 +315,6 @@ En funció de les dades i de l'objectiu de l'estudi, aplicar proves de contrast 
 Procedim a realitzar un anàlisis de correlació amb la variable MntMeatProducts i així verificar si hi ha alguna variable que tingui una dependència prou gran per creure que pot influir amb el valor de la compra de Carn.
 
 Per fer l'estudi utilitzarem les dades normalitzades (data_clients_normalitzat):
-
-##### VARIABLE MntMeatProducts
 
 ```{r message= FALSE, warning=FALSE}
 
@@ -368,7 +350,7 @@ Mirem ara de fer una prova de contrast d'hipòtesi:
 Com que quasi totes les relacions entre les variables del dataset original no són homogènies, utilitzarem el tests de kruskal entre els diferents variables i les variables d’estudi, revisant quin valor de p-value dona.
 Si és menor a 0,05 conclourem que els valors de la variable d’estudi és variant segons els diferents valors de l’altra variable.
 
-##### VARIABLE MntMeatProducts
+##### Test de Kruskal
 
 ```{r message= FALSE, warning=FALSE}
 
@@ -411,9 +393,9 @@ print(paste("Número de Registres clients.widow: ",nrow(data_clients.widow)))
 
 En el nostre cas, totes les mostres són majors de 30 registres per tant podem utilitzar l'anàlisi de contrast de t-student amb aquests conjunts de dades:
 
-Fem un estudi respecte el que es gasta en fruita els diferents subconjunts que anteriorment hem calculat:
+Fem un estudi respecte el que es gasta en carn els diferents subconjunts que anteriorment hem calculat:
 
-##### VARIABLE MntMeatProducts
+##### T-student
 
 ```{r message= FALSE, warning=FALSE}
 print(paste("t-students basic vs divorced:",t.test(data_clients.basic$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
@@ -424,7 +406,6 @@ print(paste("t-students basic vs widow:",t.test(data_clients.basic$MntMeatProduc
 print(paste("t-students graduation vs divorced:",t.test(data_clients.graduation$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students graduation vs married:",t.test(data_clients.graduation$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students graduation vs single:",t.test(data_clients.graduation$MntMeatProducts, data_clients.single$MntMeatProducts,alternative = "less")$p.value))
-print(paste("t-students graduation vs together:",t.test(data_clients.graduation$MntMeatProducts, data_clients.together$MntFruits,alternative = "less")$p.value))
 print(paste("t-students graduation vs widow:",t.test(data_clients.graduation$MntMeatProducts, data_clients.widow$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students cycle vs divorced:",t.test(data_clients.cycle$MntMeatProducts, data_clients.divorced$MntMeatProducts,alternative = "less")$p.value))
 print(paste("t-students cycle vs married:",t.test(data_clients.cycle$MntMeatProducts, data_clients.married$MntMeatProducts,alternative = "less")$p.value))
@@ -448,20 +429,15 @@ print(paste("t-students phd vs widow:",t.test(data_clients.phd$MntMeatProducts, 
 
 Per obtenir un model de regressió lineal eficient ho farem a partir de les variables amb més correlació que haguem trobat de les variables en estudi.
 
-En aquest cas, i segons els estudis anteriors, ens centrarem amb la variable MntMeatProducts i
-
-- Income
-- NumCatalogPurchase 
-
-##### Generació del model: 
+En aquest cas, i segons els estudis anteriors, ens centrarem amb la variable MntMeatProducts i Income, NumCatalogPurchase, NumStorePurchases i NumWebPurchases.
 
 ```{r message= FALSE, warning=FALSE}
 
 model1 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  , data = data_clients)
 model2 <- lm(data_clients$MntMeatProducts ~  data_clients$NumCatalogPurchase  , data = data_clients)
 model3 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase  , data = data_clients)
-model4 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$MntFruits  , data = data_clients)
-model5 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$MntFruits + data_clients$MntFishProducts  , data = data_clients)
+model4 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$NumStorePurchases  , data = data_clients)
+model5 <- lm(data_clients$MntMeatProducts ~ data_clients$Income  + data_clients$NumCatalogPurchase + data_clients$NumStorePurchases + data_clients$NumWebPurchases  , data = data_clients)
 
 tabla.quoficients <- matrix(c(
 1, summary(model1)$r.squared,
@@ -476,13 +452,11 @@ tabla.quoficients
 
 En aquest cas veiem que tots tenen una coeficient de determinació baix, per tant ens quedem l'últim model per fer la predicció del número de diners gastats per un client amb carn.
 
-*****
 ## Representació dels resultats a partir de taules gràfiques
-*****
 
 Les taules gràfiques han d'ajudar a representat els resultats mostrats anteriorment.
 
-Primerament, es comprova que les compres realitzades la carn i fetes des del catàleg en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de fruita tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
+Primerament, es comprova que les compres realitzades la carn i fetes des del catàleg en relació als estudis que tenen (s'ha comprovat en les proves estadístiques que els estudis i les compres de carn tenen relació, s'ha afegit en aquest gràfic les compres de carn per a poder contrastar el diferents productes):
 
 ```{r message= FALSE, warning=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2'); library(ggplot2)
@@ -494,7 +468,7 @@ ggplot(data_clients_normalitzat, aes(x=NumStorePurchases, y=MntMeatProducts, col
 Es pot observar que hi ha una gran diferència de les persones amb estudis bàsics, que gasten menys diners en la compra de carn. Tot i així, les persones amb la resta d'estudis, compren per sobre de la mitjana.
 
 
-Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat amb les variables en referència a la compra de fruita:
+Degut a que l'educació no és un factor rellevant, es decideix fer ús de l'edat:
 
 ```{r message= FALSE, warning=FALSE}
 
@@ -514,16 +488,16 @@ data_clients["segment_edat"] <- cut(data_clients$Year_Birth, breaks = c(0, 1950,
 plotMeat <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=MntMeatProducts)) + 
     geom_bar(position="fill", stat="identity")
 
-plotFish <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumStorePurchases)) + 
+plotStore <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumStorePurchases)) + 
     geom_bar(position="fill", stat="identity")
 
-plotFruits <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumCatalogPurchases)) + 
+plotCatalog <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumCatalogPurchases)) + 
     geom_bar(position="fill", stat="identity")
 
-plotSweet <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumWebPurchases)) + 
+plotWeb <- ggplot(data_clients, aes(fill=Education, y=segment_edat, x=NumWebPurchases)) + 
     geom_bar(position="fill", stat="identity")
 
-grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+grid.arrange(plotMeat, plotStore, plotCatalog, plotWeb)
 
 ```
 
@@ -534,23 +508,21 @@ Finalment, es comprova les compres realitzades segons els diners gastats en les 
 plotMeat <- ggplot(data_clients_normalitzat, aes(x=Income, y=MntMeatProducts) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotFruits <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumWebPurchases) ) +
+plotWeb <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumWebPurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotFish <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumCatalogPurchases) ) +
+plotCatalog <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumCatalogPurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-plotSweet <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumStorePurchases) ) +
+plotStore <- ggplot(data_clients_normalitzat, aes(x=Income, y=NumStorePurchases) ) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", colour="white")
 
-grid.arrange(plotMeat, plotFruits, plotFish, plotSweet)
+grid.arrange(plotMeat, plotWeb, plotCatalog, plotStore)
 
 ```
 
-
-*****
 ## Resolució del problema
-*****
+
 A partir dels resultats obtinguts, quines són les conclusions?
 Els resultats permeten respondre al problema?
 
@@ -564,6 +536,11 @@ Finalment, amb la representació dels resultats es conclou el següent:
 - Hi ha una relació directa entre els ingressos mensuals i el gasto fet en les compres dels productes. Tot i així, és important saber que la majoria dels clients tenen un ingrés de 35,000 dollars anuals. I el gasto de productes augmenta a partir dels 45,000 i 50,000 dollars.
 - Pel que fa als estudis, els clients més habituals són els graduats, a excepció dels nascuts abans del 1950 que tenen un PhD.
 
+Es guarden les dades utilitzades en un altre CSV:
+
+```{r message= FALSE, warning=FALSE}
+write.csv(data_clients_normalitzat,'../data/PRA2_Marketing_campaign.csv')
+```
 
 Contribucions                   Signatura
 -------------------------       -------------------------------------------
