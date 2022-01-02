@@ -26,5 +26,5 @@ El CSV amb les dades finals analitzades es troben dins del fixer següent: [data
 
 # DOCUMENTACIÓ
 
-[code/practica_2.pdf](https://github.com/mfontsanc/TIP-PRA2/blob/main/code/practica_2.pdf)
+La documentació en versió PDF és el següent document: [code/practica_2.pdf](https://github.com/mfontsanc/TIP-PRA2/blob/main/code/practica_2.pdf)
 
